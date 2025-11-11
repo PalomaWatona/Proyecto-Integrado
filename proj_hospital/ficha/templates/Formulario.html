@@ -12,13 +12,7 @@
 </head>
 
 <body>
-    <nav class="navb">
-        <a class="logohospital" href="/menu/"><img src="{% static 'img/logo.png' %}" class="logo"></a>
-        <div class="usuario-info">
-            <span class="usuario-nombre"> {{ usuario.nombre }} </span>
-            <a href="/logout/" class="usuario-cerrarsesion">Cerrar sesión</a>
-        </div>
-    </nav>
+    {% include 'components/navbar.html' %}
     <main>
         <div class="maincard">
         <label class="label-title">Formulario</label>

@@ -1,0 +1,9 @@
+{% load static %}
+
+<nav class="navb">
+    <a class="logohospital" href="/menu/"><img src="{% static 'img/logo.png' %}" class="logo"></a>
+    <div class="usuario-info">
+        <a href='/perfil/{{ usuario.id }}/' class="usuario-nombre"> {{ usuario.nombre }} </a>
+        <a href="/logout/" class="usuario-cerrarsesion">Cerrar sesión</a>
+    </div>
+</nav>

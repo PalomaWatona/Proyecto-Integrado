@@ -49,14 +49,10 @@ def iniciarSesion(request):
         except Usuario.DoesNotExist:
             datos = {'r': 'Error en el usuario y/o contraseña'}
             return render(request, 'login.html', datos)
-
-        request.session['estadoSesion'] = True
-        request.session['username'] = usuario.nombre.upper()
         request.session['userid'] = usuario.id
         request.session['rol'] = (usuario.rol or '').upper()
 
         return redirect('menu')
-    
     else:
         return render(request, 'login.html')
 
@@ -67,13 +63,23 @@ def cerrarSesion(request):
         usuario_id=request.session.get('userid'),
         accion='Sesión cerrada'
     )
-    request.session.pop('estadoSesion', None)
-    request.session.pop('username', None)
     request.session.pop('userid', None)
     request.session.pop('rol', None)
     request.session.flush()
 
     return redirect('login')
+
+def perfil(request, id):
+    userid = request.session.get('userid')
+    if not userid:
+        datos = {'r': 'Debe iniciar sesión para ingresar al perfil'}
+        return redirect('login')
+    usuario = get_object_or_404(Usuario, pk=userid)
+    usuario_perfil = get_object_or_404(Usuario, pk=id)
+
+    datos = {'usuario': usuario, 'usuario_perfil': usuario_perfil}
+
+    return render(request, 'perfil.html', datos)
 
 
 def formulario(request):
@@ -81,30 +87,29 @@ def formulario(request):
     if not userid:
         datos = {'r': 'Debe iniciar sesión para ingresar al formulario'}
         return redirect('login')
-
     usuario = get_object_or_404(Usuario, pk=userid)
+    rol = (usuario.rol or '').lower()
+    if rol != 'admin' and rol != 'paramedico':
+        datos = {'r': 'Rol no autorizado para ingresar al formulario'}
+        return redirect('/')
+
     datos = {'usuario': usuario}
 
     return render(request, 'formulario.html', datos)
 
-def listado(request):
-    userid = request.session.get('userid')
-    if not userid:
-        datos = {'r': 'Debe iniciar sesión para ingresar al listado'}
-        return redirect('login')
 
-    usuario = get_object_or_404(Usuario, pk=userid)
-    datos = {'usuario': usuario}
-
-    return render(request, 'Listado.html', datos)
 
 def insertar(request):
     userid = request.session.get('userid')
     if not userid:
         datos = {'r': 'login requerido'}
         return redirect('login')
-    
     usuario = get_object_or_404(Usuario, pk=userid)
+    rol = (usuario.rol or '').lower()
+    if rol != 'admin' and rol != 'paramedico':
+        datos = {'r': 'Rol no autorizado para insertar una ficha'}
+        return redirect('/')
+
     
     nompa = request.POST['txtnompa']
     apepa = request.POST['txtapepa']
@@ -151,8 +156,12 @@ def listado(request):
     if not userid:
         datos = {'r': 'Debe iniciar sesión para ingresar al listado'}
         return redirect('login')
-
     usuario = get_object_or_404(Usuario, pk=userid)
+    rol = (usuario.rol or '').lower()
+    if rol != 'admin' and rol != 'coordinador' and rol != 'paramedico':
+        datos = {'r': 'Rol no autorizado para ingresar al listado'}
+        return redirect('/')
+
     fichas = Fichas.objects.all()
     datos = {'usuario': usuario, 'fichas': fichas}
 
@@ -163,6 +172,11 @@ def eliminarficha(request, id):
     if not userid:
         datos = {'r': 'Debe iniciar sesión para eliminar una ficha'}
         return redirect('login')
+    usuario = get_object_or_404(Usuario, pk=userid)
+    rol = (usuario.rol or '').lower()
+    if rol != 'admin' and rol != 'paramedico':
+        datos = {'r': 'Rol no autorizado para eliminar una ficha'}
+        return redirect('/')
 
     ficha = get_object_or_404(Fichas, pk=id)
     ficha.delete()
@@ -174,8 +188,8 @@ def verficha(request, id):
     if not userid:
         datos = {'r': 'Debe iniciar sesión para ver una ficha'}
         return redirect('login')
-
     usuario = get_object_or_404(Usuario, pk=userid)
+
     ficha = get_object_or_404(Fichas, pk=id)
     datos = {'usuario': usuario, 'ficha': ficha}
 

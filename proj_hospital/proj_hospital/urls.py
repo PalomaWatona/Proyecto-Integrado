@@ -7,6 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.redir, name='redirect'),
     path('menu/', views.menu, name='menu'),
+    path('perfil/<int:id>/', views.perfil, name='perfil'),
     path('login/', views.iniciarSesion, name='login'),
     path('logout/', views.cerrarSesion, name='logout'),
     path('insertar/', views.insertar, name='insertar'),
