@@ -29,3 +29,14 @@ class Usuario(models.Model):
     nombre = models.CharField(max_length=50)
     correo = models.CharField(max_length=50)
     rol = models.CharField(max_length=20)
+'''
+class HistorialFichas(models.Model):
+    ficha = models.ForeignKey(Fichas, on_delete=models.CASCADE)
+    fecha_modificacion = models.DateTimeField(auto_now=True)
+    cambios_realizados = models.TextField()
+'''
+
+class HistorialAcciones(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    accion = models.CharField(max_length=100)
+    fechacreacion = models.DateTimeField(auto_now_add=True)

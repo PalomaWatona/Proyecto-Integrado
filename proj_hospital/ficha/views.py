@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import redirect
-from ficha.models import Usuario
+from ficha.models import HistorialAcciones, Usuario
 from ficha.models import Fichas
 import hashlib
 
@@ -40,6 +40,12 @@ def iniciarSesion(request):
         has = hashlib.md5(con.encode('utf-8')).hexdigest()
         try:
             usuario = Usuario.objects.get(rut=rut, contraseña=has)
+
+            HistorialAcciones.objects.create(
+                usuario=usuario, 
+                accion='Sesión iniciada'
+            )
+            
         except Usuario.DoesNotExist:
             datos = {'r': 'Error en el usuario y/o contraseña'}
             return render(request, 'login.html', datos)
@@ -50,16 +56,23 @@ def iniciarSesion(request):
         request.session['rol'] = (usuario.rol or '').upper()
 
         return redirect('menu')
+    
     else:
         return render(request, 'login.html')
 
 
 def cerrarSesion(request):
+
+    HistorialAcciones.objects.create(
+        usuario_id=request.session.get('userid'),
+        accion='Sesión cerrada'
+    )
     request.session.pop('estadoSesion', None)
     request.session.pop('username', None)
     request.session.pop('userid', None)
     request.session.pop('rol', None)
     request.session.flush()
+
     return redirect('login')
 
 
