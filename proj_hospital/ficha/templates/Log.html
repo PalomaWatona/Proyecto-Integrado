@@ -1,0 +1,42 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de fichas - Hospital Rancagua</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/listado.css' %}">
+</head>
+<body>
+    {% include 'components/navbar.html' %}
+    <main>
+        <div class="maincard">
+            <label class="label-title">Historial de acciones</label>
+            {% if log %}
+
+                <table class="table">
+                    <tr >
+                        <th style="width: 90px;">Usuario</th>
+                        <th>Accion</th>
+                        <th style="width: 190px;">Fecha</th>
+                    </tr>
+                {% for x in log %}    
+                    <tr class="align-middle">
+                        <td><a class="rutuser" href="/perfil/{{ x.usuario.id }}/" title="[{{ x.usuario.rut }}] {{ x.usuario.nombre }} {{ x.usuario.apellido }}">{{ x.usuario.rut }}</a></td>
+                        <td>{{ x.accion|safe }}</td>
+                        <td>{{ x.fechacreacion }}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+            {% else %}
+                <label class="txtnotfound">No hay registros para mostrar</label>
+            {% endif %}
+        </div>
+    </main>
+
+
+<script src="{% static 'js/listado.js' %}"></script>
+</body>
+</html>

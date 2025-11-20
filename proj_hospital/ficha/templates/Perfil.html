@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú Principal - Hospital Rancagua</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/listado.css' %}">
     <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
 </head>
 <body>
@@ -14,7 +15,50 @@
     <main>
         <div class="maincard">
             <label class="label-title">Perfil</label>
-            nombre : {{ usuario_perfil.nombre }}
+            <div class="perfil">
+                <div class="perfil-izquierdo">
+                    <img src="{% static 'img/defaultprofile.jpg' %}" class="perfil-icon" alt="Icono de usuario">
+                    <p class="p-name">{{ usuario_perfil.nombre }} {{ usuario_perfil.apellido }}</p>
+                    <p class="p-text">{{ usuario_perfil.rol }}</p>
+                </div>
+                <div class="perfil-centro">
+                    <p class="p-text">RUT: {{ usuario_perfil.rut }}</p>
+                    <p class="p-text">Correo: {{ usuario_perfil.correo }}</p>
+                    {% if usuario_perfil.telefono %} <p class="p-text">Telefono: +56{{ usuario_perfil.telefono }}</p> {% endif %}
+                    <br/>
+                    <p class="p-text">Fecha de creación: {{ usuario_perfil.fechacreacion }}</p>
+                    <p class="p-text">Último inicio de sesión: {% if lastlog %} {{ lastlog.fechacreacion }} {% else %} n/a {% endif %}</p>
+                </div>
+                {% if perfilself or usuario.rol|lower == 'admin' %}
+                    <div class="perfil-derecho">
+                        <a href="/editarperfil/{{ usuario_perfil.id }}/" class="btn-editperfil">editarperfil</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if usuario.rol|lower == 'admin' %}
+
+                <p class="table-title">Últimas acciones</p>
+                {% if lastactions %}
+                    <table class="table">
+                        <tr >
+                            <th>Accion</th>
+                            <th style="width: 190px;">Fecha</th>
+                        </tr>
+                    {% for x in lastactions %}    
+                        <tr class="align-middle">
+                            <td>{{ x.accion|safe }}</td>
+                            <td>{{ x.fechacreacion }}</td>
+                        </tr>
+                    {% endfor %}    
+                    </table>
+                    <br/>    
+                {% else %}
+                    <label class="txtnotfound">No hay registros para mostrar</label>
+                {% endif %}
+                
+            {% endif %}
+            
         </div>
     </main>
 

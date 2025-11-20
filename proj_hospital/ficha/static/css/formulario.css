@@ -13,7 +13,10 @@
 
 
 
-
+.form-container{
+    max-width: 900px;
+    margin: 0 auto;
+}
 .input-label {
     font-weight: 600;
     margin-top: 20px;
@@ -73,6 +76,7 @@
 
 .input-select {
     padding: 8px;
+    background-color: white;
     border: 1px solid #ccc;
     border-radius: 10px;
     font-size: 14px;

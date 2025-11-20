@@ -17,15 +17,14 @@
             {% if fichas %}
                 <table class="table">
                     <tr >
-                        <th>ID de ficha</th>
-                        <th>Nombre Completo</th>
-                        <th>Genero</th>
-                        <th>Edad</th>
+                        <th style="width: 30px;">ID</th>
+                        <th style="width: 200px;">Nombre Completo</th>
+                        <th style="width: 80px;">Genero</th>
+                        <th style="width: 20px;">Edad</th>
                         <th>Motivo de consulta</th>
-                        <th>Fecha</th>
-                        <th>Botones</th>
+                        <th style="width: 190px;">Fecha</th>
+                        <th style="width: 50px;"></th>
                     </tr>
-
                 {% for x in fichas %}    
                     <tr class="align-middle">
                         <td>{{ x.id }}</td>
@@ -35,24 +34,25 @@
                         <td>{{ x.motivoconsulta }}</td>
                         <td>{{ x.fechacreacion }}</td>
                         <td class="tdbuttons">
-                            <button type="button" class= "tdbutton" title="Eliminar ficha" onClick="botonEliminar({{ x.id }})">
-                                <img src="{% static 'svg/delete.svg' %}" class="tdbutton-icon" alt="Eliminar">
-                            </button>
+                            {% if usuario.rol|lower == 'admin' %}
+                                <button type="button" class= "tdbutton" title="Eliminar ficha" onClick="botonEliminar({{ x.id }})">
+                                    <img src="{% static 'svg/delete.svg' %}" class="tdbutton-icon" alt="Eliminar">
+                                </button>
+                            {% endif %}
                             <button type="button" class= "tdbutton" title="Ver ficha" onClick="botonVerFicha({{ x.id }})">
                                 <img src="{% static 'svg/read.svg' %}" class="tdbutton-icon" alt="Ver Ficha">
                             </button>
+
+                            <button type="button" class= "tdbutton" title="Editar ficha" onClick="botonEditarFicha({{ x.id }})">
+                                <img src="{% static 'svg/edit.svg' %}" class="tdbutton-icon" alt="Editar Ficha">
+                            </button>
+                            
                         </td>
                     </tr>
-                    
                 {% endfor %}
-                    
                 </table>
-                <br/>
-            
             {% else %}
-
                 <label class="txtnotfound">No hay registros de fichas para mostrar</label>
-
             {% endif %}
         </div>
     </main>

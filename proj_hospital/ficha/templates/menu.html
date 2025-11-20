@@ -15,10 +15,27 @@
         <div class="maincard">
             <label class="label-title">Menu</label>
             <div class="menu-buttons">
+
+                {% if usuario.rol|lower == 'admin' or usuario.rol|lower == 'paramedico' %}
+                    <a href="/formulario/" class="menu-button">
+                        <img src="{% static 'svg/form.svg' %}" class="menu-icon" alt="Formulario Icono">
+                        <span class="menu-text">Formularios de Fichas</span>
+                    </a>
+                {% endif %}
+
+                {% if usuario.rol|lower == 'admin' or usuario.rol|lower == 'coordinador' %}
                 <a href="/listado/" class="menu-button">
                     <img src="{% static 'svg/list.svg' %}" class="menu-icon" alt="Listado Icono">
                     <span class="menu-text">Listado de Fichas</span>
                 </a>
+                {% endif %}
+
+                {% if usuario.rol|lower == 'admin' %}
+                <a href="/log/" class="menu-button">
+                    <img src="{% static 'svg/log.svg' %}" class="menu-icon" alt="Listado Icono">
+                    <span class="menu-text">Historial de acciones</span>
+                </a>
+                {% endif %}
             </div>
 
 

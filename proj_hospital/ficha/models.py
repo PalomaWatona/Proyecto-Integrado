@@ -24,11 +24,17 @@ class Fichas(models.Model):
     
     
 class Usuario(models.Model):
-    rut = models.CharField(max_length=12, unique=True)
-    contraseña = models.CharField(max_length=100)
+    rut = models.CharField(max_length=12, unique=True )
     nombre = models.CharField(max_length=50)
+    apellido = models.CharField(max_length=50)
+    telefono = models.CharField(max_length=9)
+    bio = models.CharField(max_length=200)
+    contraseña = models.CharField(max_length=100)
     correo = models.CharField(max_length=50)
     rol = models.CharField(max_length=20)
+    estado = models.BooleanField(default=True)
+    fechacreacion = models.DateTimeField(auto_now_add=True)
+    
 '''
 class HistorialFichas(models.Model):
     ficha = models.ForeignKey(Fichas, on_delete=models.CASCADE)

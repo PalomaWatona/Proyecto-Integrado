@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Hospital Rancagua</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+</head>
+<body>
+    {% include 'components/navbar.html' %}
+    <main>
+        <div class="maincard">
+            <label class="label-title">Editar perfil</label>
+            <div class="form-container">
+                <form method="post" action="/editarperfil_send/{{ usuario_perfil.id }}/">
+                    {% csrf_token %}
+
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Nombre</label>
+                            <input class="input-text" type="text" name="txtnom" placeholder="Ingresa el Nombre" value="{{ usuario_perfil.nombre }}" maxlength="80">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Apellido</label>
+                            <input class="input-text" type="text" name="txtape" placeholder="Ingresa el Apellido" value="{{ usuario_perfil.apellido }}" maxlength="80">
+                        </div>
+                    </div>
+
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Correo</label>
+                            <input class="input-text" type="email" name="txtcor" placeholder="Ingresa el Correo" value="{{ usuario_perfil.correo }}" maxlength="80">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Teléfono</label>
+                            <input class="input-phone" type="number" name="txttel" placeholder="Ingrese un teléfono" value="{{ usuario_perfil.telefono }}" min="0" max="999999999" >
+                        </div>
+                    </div>
+                    {% if usuario.rol|lower == 'admin' %}
+                    <div class="input-group">
+                        <label class="input-label">Rol</label>
+                        <select class="input-select" name="cbopre" {% if usuario_perfil.rol|lower == 'admin' %} disabled {% endif %}>
+                            <option value="">-Elija un rol-</option>
+                            {% if usuario_perfil.rol == "admin" %} <option value="admin" selected >Administrador</option> {% endif %}
+                            <option value="coordinador" {% if usuario_perfil.rol == "coordinador" %} selected {% endif %}>Coordinador de urgencias</option>
+                            <option value="paramedico" {% if usuario_perfil.rol == "paramedico" %} selected {% endif %}>Paramedico</option>
+                        </select>
+                    </div>
+                    {% endif %}
+
+                <button type="submit" class="button-01">
+                        <span>Actualizar</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    
+</body>
+</html>

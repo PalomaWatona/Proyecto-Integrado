@@ -1,0 +1,49 @@
+.perfil{
+    width: 100%;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.perfil-izquierdo {
+    float: left;
+    width: 300px;
+    padding: 10px;
+    text-align: center;
+}
+.perfil-centro {
+    float: left;
+    padding: 10px;
+}
+.perfil-derecho {
+    float: right;
+    width: 200px;
+    padding: 10px;
+    text-align: center;
+}
+
+.p-text {
+    font-size: 18px;
+    font-weight: 200;
+    line-height: 0.5;
+}
+
+.p-name {
+    font-size: 24px;
+    font-weight: 200;
+    line-height: 0;
+}
+
+.table-title {
+    font-size: 20px;
+    font-weight: 300;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.table {
+    width: 90%;
+    justify-self: center;
+    justify-content: center;
+    border-collapse: collapse;
+    margin-top: 10px;
+}

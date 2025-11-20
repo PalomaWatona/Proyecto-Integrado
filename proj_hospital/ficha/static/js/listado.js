@@ -8,3 +8,7 @@ const botonVerFicha = (id) => {
     window.location.href = "/verficha/" + id;  
 }
 
+const botonEditarFicha = (id) => {
+    window.location.href = "/editarficha/" + id;  
+}
+

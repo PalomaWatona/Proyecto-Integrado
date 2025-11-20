@@ -8,12 +8,17 @@ urlpatterns = [
     path('', views.redir, name='redirect'),
     path('menu/', views.menu, name='menu'),
     path('perfil/<int:id>/', views.perfil, name='perfil'),
+    path('editarperfil/<int:id>/', views.editarperfil, name='editarperfil'),
+    path('editarperfil_send/<int:id>/', views.editarperfil_send, name='editarperfil_send'),
     path('login/', views.iniciarSesion, name='login'),
     path('logout/', views.cerrarSesion, name='logout'),
-    path('insertar/', views.insertar, name='insertar'),
     path('formulario/', views.formulario, name='formulario'),
+    path('formulario_send/', views.formulario_send, name='formulario_send'),
+    path('editarficha/<int:id>/', views.editarficha, name='editarficha'),
+    path('editarficha_send/<int:id>/', views.editarficha_send, name='editarficha_send'),
     path('listado/', views.listado, name='listado'),
     path('eliminarficha/<int:id>/', views.eliminarficha, name='eliminarficha'),
     path('verficha/<int:id>/', views.verficha, name='verficha'),
+    path('log/', views.log, name='log'),
 ]
 
