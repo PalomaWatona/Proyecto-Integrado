@@ -15,7 +15,9 @@
         <div class="maincard">
             <label class="label-title">Menu</label>
             <div class="menu-buttons">
-
+                {% if r %}
+                    {{ r.message }}
+                {% endif %}
                 {% if usuario.rol|lower == 'admin' or usuario.rol|lower == 'paramedico' %}
                     <a href="/formulario/" class="menu-button">
                         <img src="{% static 'svg/form.svg' %}" class="menu-icon" alt="Formulario Icono">

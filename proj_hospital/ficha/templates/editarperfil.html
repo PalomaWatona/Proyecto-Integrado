@@ -42,14 +42,23 @@
                         </div>
                     </div>
                     {% if usuario.rol|lower == 'admin' %}
-                    <div class="input-group">
-                        <label class="input-label">Rol</label>
-                        <select class="input-select" name="cbopre" {% if usuario_perfil.rol|lower == 'admin' %} disabled {% endif %}>
-                            <option value="">-Elija un rol-</option>
-                            {% if usuario_perfil.rol == "admin" %} <option value="admin" selected >Administrador</option> {% endif %}
-                            <option value="coordinador" {% if usuario_perfil.rol == "coordinador" %} selected {% endif %}>Coordinador de urgencias</option>
-                            <option value="paramedico" {% if usuario_perfil.rol == "paramedico" %} selected {% endif %}>Paramedico</option>
-                        </select>
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Rol</label>
+                            <select class="input-select" name="cborol" {% if usuario_perfil.rol|lower == 'admin' %} disabled {% endif %}>
+                                <option value="">-Elija un rol-</option>
+                                {% if usuario_perfil.rol == "admin" %} <option value="admin" selected >Administrador</option> {% endif %}
+                                <option value="coordinador" {% if usuario_perfil.rol == "coordinador" %} selected {% endif %}>Coordinador de urgencias</option>
+                                <option value="paramedico" {% if usuario_perfil.rol == "paramedico" %} selected {% endif %}>Paramedico</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Estado</label>
+                            <select class="input-select" name="cboest" {% if usuario_perfil.rol|lower == 'admin' %} disabled {% endif %} >
+                                <option value="True" {% if usuario_perfil.estado %} selected {% endif %}>Activo</option>
+                                <option value="False" {% if not usuario_perfil.estado %} selected {% endif %}>Inactivo</option>
+                            </select>
+                        </div>
                     </div>
                     {% endif %}
 
