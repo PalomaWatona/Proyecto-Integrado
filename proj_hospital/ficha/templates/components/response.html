@@ -1,0 +1,30 @@
+{% load static %}
+
+{% if r %}
+    <div id="status" class="card_status">
+        <p id="statustext" class="lbl_status"> {{ r.message }} </p>
+    </div>
+    <script>
+        var type = "{{ r.type }}";
+        let statusTimeout;
+
+        var statusDiv = document.getElementById("status");
+        if (type === 'success') {
+            statusDiv.style.setProperty('--statuscolor01', 'rgba(15, 35, 3, 0.9)');
+            statusDiv.style.setProperty('--statuscolor02', 'rgb(104, 184, 57)');
+        } else if (type === 'error') {
+            statusDiv.style.setProperty('--statuscolor01', 'rgba(32, 2, 2, 0.9)');
+            statusDiv.style.setProperty('--statuscolor02', 'rgba(179, 28, 28, 1)');
+        }
+        statusDiv.classList.remove("status-hide", "status-visible");
+        void statusDiv.offsetWidth;
+        statusDiv.classList.add("status-visible");
+
+        if (statusTimeout) clearTimeout(statusTimeout);
+
+        statusTimeout = setTimeout(() => {
+            statusDiv.classList.remove("status-visible");
+            statusDiv.classList.add("status-hide");
+        }, 6000);
+    </script>
+{% endif %}

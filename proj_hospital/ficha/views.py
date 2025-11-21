@@ -19,11 +19,20 @@ responselist = [
     { 'type' : 'success', 'message' : 'Ficha eliminada correctamente.' }
 ]
 
-def redir(request):
-    r = request.GET.get('r')
-    if request.session.get('userid'):
-        return redirect(f'/menu/?r={r }') if r else redirect('/menu/')
+def geterror(request):
+    if request.session.get('r'):
+        r = responselist[ int(request.session.get('r')) ] if request.session.get('r') else None
+        request.session.pop('r')
     else:
+        r = None
+    return r
+
+def redir(request, r=None):
+    if request.session.get('userid'):
+        if r is not None: request.session['r'] = r
+        return redirect('/menu/')
+    else:
+        request.session['r'] = 1
         return redirect('/login/')
 
 def menu(request):
@@ -35,7 +44,7 @@ def menu(request):
     if not usuario.estado:
         cerrarSesion(request, disabled=True)
 
-    r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None
+    r = geterror(request)
     datos = {'usuario': usuario, 'r': r}
     return render(request, 'menu.html', datos)
     
@@ -53,14 +62,17 @@ def iniciarSesion(request):
                 accion='Sesión iniciada'
             )
         except Usuario.DoesNotExist:
-            return redirect('/login/?r=2')
+            request.session['r'] = 2
+            return redirect('/login/')
         
         if not usuario.estado:
-            return redirect('/login/?r=3')
+            request.session['r'] = 3
+            return redirect('/login/')
         
         request.session['userid'] = usuario.id
         return redirect('menu')
     else:
+        r = geterror(request)
         return render(request, 'login.html' , {'r': r} )
 
 
@@ -75,8 +87,9 @@ def cerrarSesion(request, disabled=False):
     request.session.pop('userid', None)
     request.session.flush()
 
-    if disabled == True: return redirect('/login/?r=3')
-    else:return redirect('/login/?r=4')
+    if disabled == True: request.session['r'] = 3
+    else: request.session['r'] = 4
+    return redirect('/login/')
 
 
 
@@ -84,18 +97,18 @@ def cerrarSesion(request, disabled=False):
 def perfil(request, id):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     usuario_perfil = get_object_or_404(Usuario, pk=id)
     if usuario.id != usuario_perfil.id and (usuario.rol or '').lower() != 'admin':
-        return redirect('/?r=6')
+        return redir(request, r=6)
 
     lastlog = HistorialAcciones.objects.filter(usuario=usuario_perfil, accion='Sesión iniciada').order_by('-fechacreacion').first()
     lastactions = HistorialAcciones.objects.filter(usuario=usuario_perfil).order_by('-fechacreacion')[:10]
 
     perfilself = (usuario.id == usuario_perfil.id)
 
-    r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None
+    r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'usuario_perfil': usuario_perfil, 'lastlog': lastlog, 'perfilself': perfilself, 'lastactions': lastactions}
     return render(request, 'perfil.html', datos)
 
@@ -103,14 +116,14 @@ def perfil(request, id):
 def editarperfil(request, id):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     usuario_perfil = get_object_or_404(Usuario, pk=id)
 
     if usuario.id != usuario_perfil.id and (usuario.rol or '').lower() != 'admin':
-        return redirect('/?r=5')
+        return redir(request, r=5)
 
-    r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None
+    r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'usuario_perfil': usuario_perfil}
     return render(request, 'editarperfil.html', datos)
 
@@ -118,12 +131,12 @@ def editarperfil(request, id):
 def editarperfil_send(request, id):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     usuario_perfil = get_object_or_404(Usuario, pk=id)
 
     if usuario.id != usuario_perfil.id and (usuario.rol or '').lower() != 'admin':
-        return redirect('/?r=5')
+        return redir(request, r=5)
 
     usuario_perfil.nombre =     request.POST['txtnom']
     usuario_perfil.apellido =   request.POST['txtape']
@@ -142,7 +155,8 @@ def editarperfil_send(request, id):
                 usuario=usuario, 
                 accion='Perfil editado. id: {}'.format(usuario_perfil.id)
     )
-    return redirect(f'/perfil/{usuario_perfil.id}/?r=7')
+    request.session['r'] = 7
+    return redirect(f'/perfil/{usuario_perfil.id}/')
 
 
 
@@ -152,13 +166,13 @@ def editarperfil_send(request, id):
 def formulario(request):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
     if rol != 'admin' and rol != 'paramedico':
-        return redirect('/?r=5')
-
-    r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None
+        return redir(request, r=5)
+    
+    r = geterror(request)
     datos = {'usuario': usuario, 'r': r}
     return render(request, 'formulario.html', datos)
 
@@ -166,12 +180,12 @@ def formulario(request):
 def formulario_send(request):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
     if rol != 'admin' and rol != 'paramedico':
-        return redirect('/?r=5')
-
+        return redir(request, r=5)
+    
     ficha = Fichas(
         nombrepaciente=     request.POST['txtnompa'],
         apellidopaciente=   request.POST['txtapepa'],
@@ -196,22 +210,22 @@ def formulario_send(request):
                 usuario=usuario, 
                 accion='Ficha insertada. id: <a href="/verficha/{}">{}</a>'.format(ficha.id, ficha.id)
     )
-
-    return redirect(f'/verficha/{ficha.id}/?r=8')
+    request.session['r'] = 8
+    return redirect(f'/verficha/{ficha.id}/')
 
 
 def editarficha(request, id):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
     if rol != 'admin' and rol != 'paramedico':
-        return redirect('/?r=5')
-
+        return redir(request, r=5)
+    
     ficha = get_object_or_404(Fichas, pk=id)
     
-    r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None
+    r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'ficha': ficha, 'edit': True}
     return render(request, 'formulario.html', datos)
 
@@ -219,11 +233,11 @@ def editarficha(request, id):
 def editarficha_send(request, id):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
     if rol != 'admin' and rol != 'paramedico':
-        return redirect('/?r=5')
+        return redir(request, r=5)
 
     ficha = get_object_or_404(Fichas, pk=id)
 
@@ -249,18 +263,18 @@ def editarficha_send(request, id):
                 usuario=usuario, 
                 accion='Ficha editada. id: {}'.format(ficha.id)
     )
-
-    return redirect(f'/verficha/{ficha.id}/?r=9')
+    request.session['r'] = 9
+    return redirect(f'/verficha/{ficha.id}/')
 
 
 def eliminarficha(request, id):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
     if rol != 'admin':
-        return redirect('/?r=5')
+        return redir(request, r=5)
     
     HistorialAcciones.objects.create(
                 usuario=usuario, 
@@ -270,19 +284,19 @@ def eliminarficha(request, id):
     ficha = get_object_or_404(Fichas, pk=id)
     ficha.delete()
 
-    return redirect('listado/?r=10')
+    request.session['r'] = 10
+    return redirect('listado/')
 
 
 def verficha(request, id):
     userid = request.session.get('userid')
     if not userid:
-        datos = {'r': 'Debe iniciar sesión para ver una ficha'}
-        return redirect('login')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
 
     ficha = get_object_or_404(Fichas, pk=id)
 
-    r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None
+    r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'ficha': ficha}
     return render(request, 'Ficha.html', datos)
 
@@ -292,15 +306,15 @@ def verficha(request, id):
 def listado(request):
     userid = request.session.get('userid')
     if not userid:
-        return redirect('/login/?r=1')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
-    if rol != 'admin' and rol != 'coordinador' and rol != 'paramedico':
-        return redirect('/?r=5')
-
+    if rol != 'admin' and rol != 'coordinador':
+        return redir(request, r=5)
+    
     fichas = Fichas.objects.all().filter().filter().order_by('-fechacreacion')
     
-    r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None
+    r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'fichas': fichas}
     return render(request, 'Listado.html', datos)
 
@@ -316,7 +330,7 @@ def log(request):
 
     log = HistorialAcciones.objects.all().filter().order_by('-fechacreacion')
 
-    r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None
+    r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'log': log}
     return render(request, 'log.html', datos)
 
