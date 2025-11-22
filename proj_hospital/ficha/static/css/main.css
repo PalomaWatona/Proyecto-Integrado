@@ -5,11 +5,6 @@ html, body{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-:root{
-    --statuscolor01: rgba(19, 46, 3, 0.8);
-    --statuscolor02: rgb(104, 184, 57);
-}
-
 
 .navb {
     position: fixed;
@@ -123,22 +118,29 @@ main{
     position: fixed;
     bottom: 25px;
     left: 25px;
-    z-index:1000;
-    padding-bottom: 25px;
-    padding-inline: 20px;
+    z-index: 1000;
+    padding: 10px 20px;
     display: flex;
-    flex-direction: column;
-    justify-content:baseline;
-    background: var(--statuscolor01);
-    height: 30px;
-    color: var(--statuscolor02);
-    outline: var(--statuscolor02);
-    outline-style:groove;
-    outline-width: 2px;
+    align-items: center;
+    background: white;
+    color: black;
+    outline: rgb(194, 194, 194) groove 2px;
     border-radius: 20px;
-    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.8);
+    box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.4);
     user-select: none;
-    pointer-events: none; 
+    pointer-events: none;
+}
+
+.status_icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+}
+
+.lbl_status {
+    font-size: 18px;
+    margin: 0;
+    line-height: 1.2;
 }
 
 @keyframes status-in {

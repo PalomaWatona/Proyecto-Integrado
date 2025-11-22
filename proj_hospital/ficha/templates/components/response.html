@@ -2,20 +2,16 @@
 
 {% if r %}
     <div id="status" class="card_status">
+        {% if r.type == 'success' %}
+            <img src="{% static 'svg/statussuccess.svg' %}" class="status_icon" alt="Success">
+        {% elif r.type == 'error' %}
+            <img src="{% static 'svg/statuserror.svg' %}" class="status_icon" alt="Error">
+        {% endif %}
         <p id="statustext" class="lbl_status"> {{ r.message }} </p>
     </div>
     <script>
-        var type = "{{ r.type }}";
         let statusTimeout;
-
         var statusDiv = document.getElementById("status");
-        if (type === 'success') {
-            statusDiv.style.setProperty('--statuscolor01', 'rgba(15, 35, 3, 0.9)');
-            statusDiv.style.setProperty('--statuscolor02', 'rgb(104, 184, 57)');
-        } else if (type === 'error') {
-            statusDiv.style.setProperty('--statuscolor01', 'rgba(32, 2, 2, 0.9)');
-            statusDiv.style.setProperty('--statuscolor02', 'rgba(179, 28, 28, 1)');
-        }
         statusDiv.classList.remove("status-hide", "status-visible");
         void statusDiv.offsetWidth;
         statusDiv.classList.add("status-visible");

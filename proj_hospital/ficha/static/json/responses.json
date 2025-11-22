@@ -1,0 +1,13 @@
+[
+    { "type" : "error", "message" : "Ha ocurrido un error inesperado." },
+    { "type" : "error", "message" : "Debe iniciar sesion." },
+    { "type" : "error", "message" : "Error en el usuario y/o contraseña." },
+    { "type" : "error", "message" : "Esta cuenta esta inhabilitada. Porfavor contactese con un administrador." },
+    { "type" : "success", "message" : "Sesion cerrada correctamente." },
+    { "type" : "error", "message" : "No autorizado para realizar esta accion." },
+    { "type" : "error", "message" : "No autorizado para ver este perfil." },
+    { "type" : "success", "message" : "Perfil actualizado correctamente." },
+    { "type" : "success", "message" : "Ficha creada correctamente." },
+    { "type" : "success", "message" : "Ficha actualizada correctamente." },
+    { "type" : "success", "message" : "Ficha eliminada correctamente." }
+]

@@ -1,23 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import redirect
-
+from django.conf import settings
 from ficha.models import HistorialAcciones, Usuario
 from ficha.models import Fichas
-import hashlib
+import os, json, hashlib
 
-responselist = [
-    { 'type' : 'error', 'message' : 'Ha ocurrido un error inesperado.' },
-    { 'type' : 'error', 'message' : 'Debe iniciar sesion.' },
-    { 'type' : 'error', 'message' : 'Error en el usuario y/o contraseña.' },
-    { 'type' : 'error', 'message' : 'Esta cuenta esta inhabilitada. Porfavor contactese con un administrador.' },
-    { 'type' : 'success', 'message' : 'Sesion cerrada correctamente.' },
-    { 'type' : 'error', 'message' : 'No autorizado para realizar esta accion.' },
-    { 'type' : 'error', 'message' : 'No autorizado para ver este perfil.' },
-    { 'type' : 'success', 'message' : 'Perfil actualizado correctamente.' },
-    { 'type' : 'success', 'message' : 'Ficha creada correctamente.' },
-    { 'type' : 'success', 'message' : 'Ficha actualizada correctamente.' },
-    { 'type' : 'success', 'message' : 'Ficha eliminada correctamente.' }
-]
+with open(os.path.join(settings.BASE_DIR, 'ficha', 'static', 'json', 'responses.json'), 'r', encoding='utf-8') as f:
+    responselist = json.load(f)
 
 def geterror(request):
     if request.session.get('r'):
@@ -26,6 +15,8 @@ def geterror(request):
     else:
         r = None
     return r
+        
+
 
 def redir(request, r=None):
     if request.session.get('userid'):
@@ -38,12 +29,11 @@ def redir(request, r=None):
 def menu(request):
     userid = request.session.get('userid')
     if not userid:
-        datos = {'r': 'Debe iniciar sesión para ingresar al formulario'}
-        return redirect('login')
+        return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     if not usuario.estado:
         cerrarSesion(request, disabled=True)
-
+    
     r = geterror(request)
     datos = {'usuario': usuario, 'r': r}
     return render(request, 'menu.html', datos)
@@ -77,8 +67,9 @@ def iniciarSesion(request):
 
 
 def cerrarSesion(request, disabled=False):
-    if not request.session.get('userid'):
-        return redirect('/')
+    userid = request.session.get('userid')
+    if not userid:
+        return redir(request)
     
     HistorialAcciones.objects.create(
         usuario_id=request.session.get('userid'),
@@ -102,11 +93,9 @@ def perfil(request, id):
     usuario_perfil = get_object_or_404(Usuario, pk=id)
     if usuario.id != usuario_perfil.id and (usuario.rol or '').lower() != 'admin':
         return redir(request, r=6)
-
     lastlog = HistorialAcciones.objects.filter(usuario=usuario_perfil, accion='Sesión iniciada').order_by('-fechacreacion').first()
-    lastactions = HistorialAcciones.objects.filter(usuario=usuario_perfil).order_by('-fechacreacion')[:10]
-
     perfilself = (usuario.id == usuario_perfil.id)
+    lastactions = HistorialAcciones.objects.filter(usuario=usuario_perfil).order_by('-fechacreacion')[:10]
 
     r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'usuario_perfil': usuario_perfil, 'lastlog': lastlog, 'perfilself': perfilself, 'lastactions': lastactions}
@@ -220,7 +209,7 @@ def editarficha(request, id):
         return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
-    if rol != 'admin' and rol != 'paramedico':
+    if rol != 'admin' and rol != 'coordinador':
         return redir(request, r=5)
     
     ficha = get_object_or_404(Fichas, pk=id)
@@ -236,7 +225,7 @@ def editarficha_send(request, id):
         return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
-    if rol != 'admin' and rol != 'paramedico':
+    if rol != 'admin' and rol != 'coordinador':
         return redir(request, r=5)
 
     ficha = get_object_or_404(Fichas, pk=id)
@@ -305,6 +294,8 @@ def verficha(request, id):
 
 def listado(request):
     userid = request.session.get('userid')
+    page = int(request.GET.get('page', 1)) or 1
+
     if not userid:
         return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
@@ -312,7 +303,7 @@ def listado(request):
     if rol != 'admin' and rol != 'coordinador':
         return redir(request, r=5)
     
-    fichas = Fichas.objects.all().filter().filter().order_by('-fechacreacion')
+    fichas = Fichas.objects.all().order_by('-fechacreacion')[ (page-1)*10 : page*10 ]
     
     r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'fichas': fichas}
