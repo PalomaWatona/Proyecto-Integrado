@@ -9,7 +9,7 @@
 .table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 120px;
+    margin-top: 12px;
 }
 
 .table th, .table td {
@@ -81,4 +81,74 @@
     font-family: monospace;
     font-weight: 20;
     color: black;
+}
+
+.lbl-results {
+    font-size: 12px;
+    font-weight: 300;
+    margin-top: 8px;
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 80px;
+    padding: 4px;
+}
+
+.pagination {
+    display: flex;
+    width: 320px;
+    justify-content: center;
+    margin-block: auto;
+}
+.pagination button {
+    height: 35px;
+    width: 35px;
+    padding: 2px 2px;
+    margin: 0 2px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 18px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    color: #333;
+    border-radius: 4px;
+}
+.pagination button:hover {
+    background-color: #21ADAC;
+    color: white;
+}
+.pagination input {
+    height: 25px;
+    min-height: 30px;
+    width: 30px;
+    max-width: 30px;
+    padding: 2px 2px;
+    margin: 0 2px;
+    text-align: center;
+    font-size: 18px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.pagination input:hover {
+    outline: none;
+    background-color: #e3eeed;
+    border-color: #53968f7a;
+}
+.pagination input:focus {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px #53968f7a;
+}
+
+.filters-left {
+    padding: 10px;
+}
+
+.filters-right {
+    padding: 10px;
 }

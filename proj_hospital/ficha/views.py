@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import redirect
 from django.conf import settings
+from django.utils.timezone import localdate
 from ficha.models import HistorialAcciones, Usuario
 from ficha.models import Fichas
 import os, json, hashlib
 
 with open(os.path.join(settings.BASE_DIR, 'ficha', 'static', 'json', 'responses.json'), 'r', encoding='utf-8') as f:
     responselist = json.load(f)
+
+
+
+
 
 def geterror(request):
     if request.session.get('r'):
@@ -15,7 +20,8 @@ def geterror(request):
     else:
         r = None
     return r
-        
+
+
 
 
 def redir(request, r=None):
@@ -25,6 +31,7 @@ def redir(request, r=None):
     else:
         request.session['r'] = 1
         return redirect('/login/')
+
 
 def menu(request):
     userid = request.session.get('userid')
@@ -85,14 +92,16 @@ def cerrarSesion(request, disabled=False):
 
 
 
-def perfil(request, id):
+def perfil(request):
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
+    id = int(request.GET.get('id', 1)) if request.GET.get('id') else usuario.id
     usuario_perfil = get_object_or_404(Usuario, pk=id)
-    if usuario.id != usuario_perfil.id and (usuario.rol or '').lower() != 'admin':
+    if (usuario_perfil.rol or '').lower() == 'admin' and (usuario.rol or '').lower() != 'admin':
         return redir(request, r=6)
+    
     lastlog = HistorialAcciones.objects.filter(usuario=usuario_perfil, accion='Sesión iniciada').order_by('-fechacreacion').first()
     perfilself = (usuario.id == usuario_perfil.id)
     lastactions = HistorialAcciones.objects.filter(usuario=usuario_perfil).order_by('-fechacreacion')[:10]
@@ -102,11 +111,12 @@ def perfil(request, id):
     return render(request, 'perfil.html', datos)
 
 
-def editarperfil(request, id):
+def editarperfil(request):
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
+    id = int(request.GET.get('id', 1)) if request.GET.get('id') else usuario.id
     usuario_perfil = get_object_or_404(Usuario, pk=id)
 
     if usuario.id != usuario_perfil.id and (usuario.rol or '').lower() != 'admin':
@@ -145,9 +155,7 @@ def editarperfil_send(request, id):
                 accion='Perfil editado. id: {}'.format(usuario_perfil.id)
     )
     request.session['r'] = 7
-    return redirect(f'/perfil/{usuario_perfil.id}/')
-
-
+    return redirect(f'/perfil/?id={usuario_perfil.id}')
 
 
 
@@ -200,10 +208,10 @@ def formulario_send(request):
                 accion='Ficha insertada. id: <a href="/verficha/{}">{}</a>'.format(ficha.id, ficha.id)
     )
     request.session['r'] = 8
-    return redirect(f'/verficha/{ficha.id}/')
+    return redirect(f'/ficha/?id={ficha.id}')
 
 
-def editarficha(request, id):
+def editarficha(request):
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -212,6 +220,7 @@ def editarficha(request, id):
     if rol != 'admin' and rol != 'coordinador':
         return redir(request, r=5)
     
+    id = int(request.GET.get('id', 1)) if request.GET.get('id') else 1
     ficha = get_object_or_404(Fichas, pk=id)
     
     r = geterror(request)
@@ -253,7 +262,7 @@ def editarficha_send(request, id):
                 accion='Ficha editada. id: {}'.format(ficha.id)
     )
     request.session['r'] = 9
-    return redirect(f'/verficha/{ficha.id}/')
+    return redirect(f'/ficha/?id={ficha.id}')
 
 
 def eliminarficha(request, id):
@@ -274,22 +283,23 @@ def eliminarficha(request, id):
     ficha.delete()
 
     request.session['r'] = 10
-    return redirect('listado/')
+    return redirect('/listado/')
 
 
-def verficha(request, id):
+
+
+def verficha(request):
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
+    id = int(request.GET.get('id', 1)) if request.GET.get('id') else 1
 
     ficha = get_object_or_404(Fichas, pk=id)
 
     r = geterror(request)
     datos = {'usuario': usuario, 'r': r, 'ficha': ficha}
     return render(request, 'Ficha.html', datos)
-
-
 
 
 def listado(request):
@@ -303,10 +313,29 @@ def listado(request):
     if rol != 'admin' and rol != 'coordinador':
         return redir(request, r=5)
     
-    fichas = Fichas.objects.all().order_by('-fechacreacion')[ (page-1)*10 : page*10 ]
+    filter_kwargs = {}
+
+    searchfilter = request.GET.get('fs', None) or None
+    search = request.GET.get('s', None) or None
+    filter_kwargs.update({f'{searchfilter}__icontains': search}) if searchfilter and search else None
+
+    orderfilter = request.GET.get('fo', 'fechacreacion') or 'fechacreacion'
+    order = request.GET.get('o', 'desc') or 'desc'
+    if order == 'desc': order = '-'
+    elif order == 'asc': order = ''
+    else: order = '-'
+        
+    page = int(request.GET.get('page', 1)) or 1
+    fulllist = Fichas.objects.all().filter(**filter_kwargs).order_by(f'{order}{orderfilter}')
+    totalpages = (Fichas.objects.count() // 20) + (1 if Fichas.objects.count() % 20 > 0 else 0)
     
     r = geterror(request)
-    datos = {'usuario': usuario, 'r': r, 'fichas': fichas}
+    datos = {'usuario': usuario, 'r': r,
+        'fichas': fulllist[ (page-1)*20 : page*20 ],
+        'page': page,
+        'totalpages': totalpages,
+        'totalresults': fulllist.count(),
+    }
     return render(request, 'Listado.html', datos)
 
 
@@ -318,11 +347,33 @@ def log(request):
     rol = (usuario.rol or '').lower()
     if rol != 'admin':
         return redirect('/?r=5')
+    
+    filter_kwargs = {}
 
-    log = HistorialAcciones.objects.all().filter().order_by('-fechacreacion')
+    searchfilter = request.GET.get('fs', None) or None
+    search = request.GET.get('s', None) or None
+    filter_kwargs.update({f'{searchfilter}__icontains': search}) if searchfilter and search else None
+
+    orderfilter = request.GET.get('fo', 'fechacreacion') or 'fechacreacion'
+    order = request.GET.get('o', 'desc') or 'desc'
+    if order == 'desc': order = '-'
+    elif order == 'asc': order = ''
+    else: order = '-'
+
+
+    
+    page = int(request.GET.get('page', 1)) or 1
+    fulllog = HistorialAcciones.objects.all().filter(**filter_kwargs).order_by(f'{order}{orderfilter}')
+
+    totalpages = (fulllog.count() // 20) + (1 if HistorialAcciones.objects.count() % 20 > 0 else 0)
 
     r = geterror(request)
-    datos = {'usuario': usuario, 'r': r, 'log': log}
+    datos = { 'usuario': usuario, 'r': r,
+        'log': fulllog[ (page-1)*20 : page*20 ],
+        'page': page,
+        'totalpages': totalpages,
+        'totalresults': fulllog.count(),
+    }
     return render(request, 'log.html', datos)
 
 

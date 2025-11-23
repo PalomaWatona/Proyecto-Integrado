@@ -32,7 +32,7 @@
                 </div>
                 {% if perfilself or usuario.rol|lower == 'admin' %}
                     <div class="perfil-derecho">
-                        <a href="/editarperfil/{{ usuario_perfil.id }}/" class="btn-editperfil">editarperfil</a>
+                        <a href="/editarperfil/{% if not perfilself %}?id={{ usuario_perfil.id }}{% endif %}" class="btn-editperfil">editarperfil</a>
                     </div>
                 {% endif %}
             </div>

@@ -242,6 +242,9 @@ main{
     .card_status {
         display: none !important;
     }
+    .button-01 {
+        display: none !important;
+    }
 }
 
 

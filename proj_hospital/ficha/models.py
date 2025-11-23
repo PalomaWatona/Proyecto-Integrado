@@ -19,6 +19,7 @@ class Fichas(models.Model):
     tiposangre = models.CharField(max_length=5, default='')
     observaciones = models.CharField(max_length=50, default='')
     fechacreacion = models.DateTimeField(auto_now_add=True)
+    revisado = models.BooleanField(default=False)
     
     
     

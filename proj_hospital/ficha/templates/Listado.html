@@ -15,7 +15,64 @@
     <main>
         <div class="maincard">
             <label class="label-title">Listado de fichas</label>
+            <div class="filters">
+                <div class="filters-left">
+                    <select class="filters-select" id="cbofilter">
+                        <option value="" selected disabled>Filtrar por...</option>
+                        <option value="nombrepaciente" {% if request.GET.fs == 'nombrepaciente' %} selected {% endif %}>Nombre Paciente</option>
+                        <option value="apellidopaciente" {% if request.GET.fs == 'apellidopaciente' %} selected {% endif %}>Apellido Paciente</option>
+                        <option value="rutpaciente" {% if request.GET.fs == 'rutpaciente' %} selected {% endif %}>RUT Paciente</option>
+                        <option value="usuario__rut" {% if request.GET.fs == 'usuario__rut' %} selected {% endif %}>RUT Médico</option>
+                        <option value="telefono" {% if request.GET.fs == 'telefono' %} selected {% endif %}>Teléfono</option>
+                        <option value="prevision" {% if request.GET.fs == 'prevision' %} selected {% endif %}>Previsión</option>
+                        <option value="genero" {% if request.GET.fs == 'genero' %} selected {% endif %}>Género</option>
+                        <option value="edad" {% if request.GET.fs == 'edad' %} selected {% endif %}>Edad</option>
+                        <option value="motivoconsulta" {% if request.GET.fs == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
+                        <option value="comorbilidades" {% if request.GET.fs == 'comorbilidades' %} selected {% endif %}>Comorbilidades</option>
+                        <option value="alergias" {% if request.GET.fs == 'alergias' %} selected {% endif %}>Alergias</option>
+                        <option value="frecuenciacardiaca" {% if request.GET.fs == 'frecuenciacardiaca' %} selected {% endif %}>Frecuencia cardiaca</option>
+                        <option value="temperatura" {% if request.GET.fs == 'temperatura' %} selected {% endif %}>Temperatura</option>
+                        <option value="presionararterial" {% if request.GET.fs == 'presionarterial' %} selected {% endif %}>Presión arterial</option>
+                        <option value="tiposangre" {% if request.GET.fs == 'tiposangre' %} selected {% endif %}>Tipo de sangre</option>
+                        <option value="observaciones" {% if request.GET.fs == 'observaciones' %} selected {% endif %}>Observaciones</option>
+                        <option value="fechacreacion" {% if request.GET.fs == 'fechacreacion' %} selected {% endif %}>Fecha de creación</option>          
+                    </select>
+                    <input class="filters-text" type="text" id="txtsearch" placeholder="Término de búsqueda" value="{% if request.GET.s %}{{ request.GET.s }}{% endif %}">
+                </div>
+                <div id="pagination" class="pagination"></div>
+                <div class="filters-right">
+                    <select class="filters-select" id="cboorderfilter">
+                        <option value="" selected disabled>Ordenar por...</option>
+                        <option value="fechacreacion" {% if request.GET.fo == 'fechacreacion' %} selected {% endif %}>Fecha de creación</option>
+                        <option value="nombrepaciente" {% if request.GET.fo == 'nombrepaciente' %} selected {% endif %}>Nombre Paciente</option>
+                        <option value="apellidopaciente" {% if request.GET.fo == 'apellidopaciente' %} selected {% endif %}>Apellido Paciente</option>
+                        <option value="rutpaciente" {% if request.GET.fo == 'rutpaciente' %} selected {% endif %}>RUT Paciente</option>
+                        <option value="usuario__rut" {% if request.GET.fo == 'usuario__rut' %} selected {% endif %}>RUT Médico</option>
+                        <option value="telefono" {% if request.GET.fo == 'telefono' %} selected {% endif %}>Teléfono</option>
+                        <option value="prevision" {% if request.GET.fo == 'prevision' %} selected {% endif %}>Previsión</option>
+                        <option value="genero" {% if request.GET.fo == 'genero' %} selected {% endif %}>Género</option>
+                        <option value="edad" {% if request.GET.fo == 'edad' %} selected {% endif %}>Edad</option>
+                        <option value="motivoconsulta" {% if request.GET.fo == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
+                        <option value="comorbilidades" {% if request.GET.fo == 'comorbilidades' %} selected {% endif %}>Comorbilidades</option>
+                        <option value="alergias" {% if request.GET.fo == 'alergias' %} selected {% endif %}>Alergias</option>
+                        <option value="frecuenciacardiaca" {% if request.GET.fo == 'frecuenciacardiaca' %} selected {% endif %}>Frecuencia cardiaca</option>
+                        <option value="temperatura" {% if request.GET.fo == 'temperatura' %} selected {% endif %}>Temperatura</option>
+                        <option value="presionararterial" {% if request.GET.fo == 'presionarterial' %} selected {% endif %}>Presión arterial</option>
+                        <option value="tiposangre" {% if request.GET.fo == 'tiposangre' %} selected {% endif %}>Tipo de sangre</option>
+                        <option value="observaciones" {% if request.GET.fo == 'observaciones' %} selected {% endif %}>Observaciones</option>
+                    </select>
+                    <select class="filter-select" id="cboorder">
+                        <option value="desc" {% if request.GET.o == 'desc' %} selected {% endif %}>Descendente</option>
+                        <option value="asc" {% if request.GET.o == 'asc' %} selected {% endif %}>Ascendente</option>
+                    </select>
+                    <button type="button" class="filters-apply" onclick="aplicarFiltros()">Aplicar filtros</button>
+                    <button type="button" class="filters-clear" onclick="borrarFiltros()">x</button>
+                </div>
+            </div>
             {% if fichas %}
+                <input type="hidden" id="totalpages" value="{{ totalpages }}">
+                <input type="hidden" id="page" value="{{ page }}">
+                <div id="pagination-container" class="pagination-container"></div>
                 <table class="table">
                     <tr >
                         <th style="width: 30px;">ID</th>
@@ -59,6 +116,9 @@
     </main>
 
 
-<script src="{% static 'js/listado.js' %}"></script>
+<script src="{% static 'js/listado-botones.js' %}"></script>
+<script src="{% static 'js/listado-pagination.js' %}"></script>
+
+<script>createPagination({{ totalpages }}, {{ page }}, 1 );</script>
 </body>
 </html>

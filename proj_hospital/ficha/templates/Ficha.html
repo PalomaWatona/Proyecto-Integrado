@@ -36,12 +36,15 @@
                 {% if ficha.tiposangre %} Tipo de Sangre: {{ ficha.tiposangre }} <br/>{% endif %}
                 <br/>
                 Observaciones: {{ ficha.observaciones }} <br/>
-
             </div>
-
+            <button class="button-01" onclick="printpage()">Imprimir Ficha</button>
         </div>
     </main>
-    <script>  window.print()  </script>
+    <script>
+        function printpage() {
+            window.print()
+        }
+    </script>
     
 </body>
 </html>
