@@ -7,7 +7,13 @@ class Command(BaseCommand):
     help = 'Resets the database by deleting all records from Fichas, Usuario, and HistorialAcciones models.'
 
     def handle(self, *args, **kwargs):
-        call_command('flush')
+
+        confirmation = input("Are you sure you want to reset the database?\nThis will delete all data.\n\nType 'yes' to confirm: ")
+        if confirmation.lower() != 'yes':
+            self.stdout.write(self.style.ERROR('Database reset cancelled.'))
+            return
+
+        call_command('flush', '--noinput')
         call_command('makemigrations')
         call_command('migrate')
 
@@ -17,8 +23,9 @@ class Command(BaseCommand):
         #creates a new admin
         Usuario.objects.create(
             rut='00.000.000-0',
-            nombre='admin',
-            apellido='',
+            nombre='Victor',
+            apellido='Ulloa',
+            telefono='958224812',
             correo='admin@hospitalrancagua.cl',
             bio='Superuser account',
             contraseña='202cb962ac59075b964b07152d234b70',
@@ -28,8 +35,9 @@ class Command(BaseCommand):
 
         Usuario.objects.create(
             rut='11.111.111-1',
-            nombre='Victor',
-            apellido='Ulloa',
+            nombre='Juan',
+            apellido='Luis',
+            telefono='977727773',
             correo='v.u@hospitalrancagua.cl',
             bio='Hola que tal chavalez',
             contraseña='202cb962ac59075b964b07152d234b70',
@@ -41,6 +49,7 @@ class Command(BaseCommand):
             rut='22.222.222-2',
             nombre='Jorge',
             apellido='Guzman',
+            telefono='912857206',
             correo='j.g@hospitalrancagua.cl',
             bio='Yyyy muy bien!',
             contraseña='202cb962ac59075b964b07152d234b70',

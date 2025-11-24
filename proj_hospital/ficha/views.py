@@ -432,7 +432,7 @@ def listado(request):
     page = int(request.GET.get('page', 1)) or 1
     pagesize = 10
     fulllist = Fichas.objects.all().filter(**filter_kwargs).order_by(f'{order}{orderfilter}')
-    totalpages = (Fichas.objects.count() // pagesize) + (1 if Fichas.objects.count() % pagesize > 0 else 0)
+    totalpages = (fulllist.count() // pagesize) + (1 if Fichas.objects.count() % pagesize > 0 else 0)
     
     r = getstatus(request)
     request.session['lasturl'] = request.get_full_path()
