@@ -24,20 +24,14 @@
                 {% if entry.cambios %}
                     {% for campo, cambio in entry.cambios.items %}
                         Campo modificado: {{ campo }}<br/>
-                        Antiguo valor: {{ cambio.old }}<br/>
-                        Nuevo valor: {{ cambio.new }}<br/><br/>
+                        └ Antiguo valor: {{ cambio.old }}<br/>
+                        └ Nuevo valor: {{ cambio.new }}<br/><br/>
                     {% endfor %}
                 {% else %}
                     Sin cambios registrados.
                 {% endif %}
             </div>
         </div>
-    </main>
-    <script>
-        function printpage() {
-            window.print()
-        }
-    </script>
-    
+    </main> 
 </body>
 </html>
