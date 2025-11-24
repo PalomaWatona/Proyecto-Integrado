@@ -37,7 +37,7 @@
                         <option value="observaciones" {% if request.GET.fs == 'observaciones' %} selected {% endif %}>Observaciones</option>
                         <option value="fechacreacion" {% if request.GET.fs == 'fechacreacion' %} selected {% endif %}>Fecha de creación</option>          
                     </select>
-                    <input class="filters-text" type="text" id="txtsearch" placeholder="Término de búsqueda" value="{% if request.GET.s %}{{ request.GET.s }}{% endif %}">
+                    <input class="filters-search" type="text" id="txtsearch" placeholder="Término de búsqueda" value="{% if request.GET.s %}{{ request.GET.s }}{% endif %}">
                 </div>
                 <div id="pagination" class="pagination"></div>
                 <div class="filters-right">
@@ -61,12 +61,12 @@
                         <option value="tiposangre" {% if request.GET.fo == 'tiposangre' %} selected {% endif %}>Tipo de sangre</option>
                         <option value="observaciones" {% if request.GET.fo == 'observaciones' %} selected {% endif %}>Observaciones</option>
                     </select>
-                    <select class="filter-select" id="cboorder">
-                        <option value="desc" {% if request.GET.o == 'desc' %} selected {% endif %}>Descendente</option>
-                        <option value="asc" {% if request.GET.o == 'asc' %} selected {% endif %}>Ascendente</option>
+                    <select class="filters-select" id="cboorder">
+                        <option value="desc" {% if request.GET.o == 'desc' %} selected {% endif %}>⮝</option>
+                        <option value="asc" {% if request.GET.o == 'asc' %} selected {% endif %}>⮟</option>
                     </select>
-                    <button type="button" class="filters-apply" onclick="aplicarFiltros()">Aplicar filtros</button>
-                    <button type="button" class="filters-clear" onclick="borrarFiltros()">x</button>
+                    <button type="button" class="filters-button" style="border-radius: 12px 0px 0px 12px;" onclick="aplicarFiltros()">Aplicar filtros</button>
+                    <button type="button" class="filters-button" style="border-radius: 0px 12px 12px 0px;" onclick="borrarFiltros()">𐌗</button>
                 </div>
             </div>
             {% if fichas %}
