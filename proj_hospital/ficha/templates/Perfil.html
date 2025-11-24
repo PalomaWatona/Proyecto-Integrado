@@ -44,11 +44,13 @@
                 {% if lastactions %}
                     <table class="table">
                         <tr >
+                            <th style="width: 15px;">ID</th>
                             <th>Accion</th>
                             <th style="width: 190px;">Fecha</th>
                         </tr>
                     {% for x in lastactions %}    
                         <tr class="align-middle">
+                            <td>{{ x.id }}</td>
                             <td>{{ x.accion|safe }}</td>
                             <td>{{ x.fechacreacion }}</td>
                         </tr>
