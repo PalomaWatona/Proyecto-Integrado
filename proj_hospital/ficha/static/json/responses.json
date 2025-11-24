@@ -9,5 +9,9 @@
     { "type" : "success", "message" : "Perfil actualizado correctamente." },
     { "type" : "success", "message" : "Ficha creada correctamente." },
     { "type" : "success", "message" : "Ficha actualizada correctamente." },
-    { "type" : "success", "message" : "Ficha eliminada correctamente." }
+    { "type" : "success", "message" : "Ficha eliminada correctamente." },
+    { "type" : "success", "message" : "Usuario agregado correctamente." },
+    { "type" : "error", "message" : "La contraseña actual es incorrecta." },
+    { "type" : "error", "message" : "Las contraseñas no pueden estar vacias." },
+    { "type" : "error", "message" : "Las contraseñas no coinciden." }
 ]

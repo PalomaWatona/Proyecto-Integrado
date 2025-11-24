@@ -27,6 +27,7 @@
                     <p class="p-text">Correo: {{ usuario_perfil.correo }}</p>
                     {% if usuario_perfil.telefono %} <p class="p-text">Telefono: +56{{ usuario_perfil.telefono }}</p> {% endif %}
                     <br/>
+                    {% if usuario_perfil.bio %}<p class="p-text">{{ usuario_perfil.bio|safe }}</p></br>{% endif %}
                     <p class="p-text">Fecha de creación: {{ usuario_perfil.fechacreacion }}</p>
                     <p class="p-text">Último inicio de sesión: {% if lastlog %} {{ lastlog.fechacreacion }} {% else %} n/a {% endif %}</p>
                 </div>

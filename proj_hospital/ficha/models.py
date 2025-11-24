@@ -17,7 +17,7 @@ class Fichas(models.Model):
     temperatura = models.CharField(max_length=50, default='')
     presionarterial = models.CharField(max_length=50, default='')
     tiposangre = models.CharField(max_length=5, default='')
-    observaciones = models.CharField(max_length=50, default='')
+    observaciones = models.CharField(max_length=2000, default='')
     fechacreacion = models.DateTimeField(auto_now_add=True)
     revisado = models.BooleanField(default=False)
     
@@ -45,5 +45,6 @@ class HistorialFichas(models.Model):
 
 class HistorialAcciones(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    accion = models.CharField(max_length=100)
+    accion = models.CharField(max_length=1000)
+    cambios = models.JSONField(null=True, blank=True)
     fechacreacion = models.DateTimeField(auto_now_add=True)

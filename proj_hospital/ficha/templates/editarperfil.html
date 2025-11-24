@@ -29,7 +29,30 @@
                             <label class="input-label">Apellido</label>
                             <input class="input-text" type="text" name="txtape" placeholder="Ingresa el Apellido" value="{{ usuario_perfil.apellido }}" maxlength="80">
                         </div>
+                        {% if not perfilself and usuario.rol|lower == 'admin' %}
+                            <div class="input-group">
+                                <label class="input-label">Reiniciar Contraseña</label>
+                                <input class="input-text" type="password" name="txtpassold" placeholder="Ingresa su contraseña antigua" maxlength="80">
+                            </div>
+                            <input type="hidden" name="txtpass1" value="">
+                            <input type="hidden" name="txtpass2" value="">
+                        {% endif %}
+
                     </div>
+                    {% if perfilself %}
+                    <label class="input-label">Contraseña</label>
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <input class="input-text" type="password" name="txtpassold" placeholder="Ingresa su contraseña antigua" maxlength="80">
+                        </div>
+                        <div class="input-group">
+                            <input class="input-text" type="password" name="txtpass1" placeholder="Ingresa su nueva contraseña" maxlength="80">
+                        </div>
+                        <div class="input-group">
+                            <input class="input-text" type="password" name="txtpass2" placeholder="Confirma su nueva contraseña" maxlength="80">
+                        </div>
+                    </div>
+                    {% endif %}
 
                     <div class="input-doublegroup">
                         <div class="input-group">
@@ -40,6 +63,12 @@
                         <div class="input-group">
                             <label class="input-label">Teléfono</label>
                             <input class="input-phone" type="number" name="txttel" placeholder="Ingrese un teléfono" value="{{ usuario_perfil.telefono }}" min="0" max="999999999" >
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Bio</label>
+                        <div class="input-txtarea">
+                            <textarea name="txtbio" placeholder="Observaciones adicionales" maxlength="2000">{{ usuario_perfil.bio }}</textarea>
                         </div>
                     </div>
                     {% if usuario.rol|lower == 'admin' %}

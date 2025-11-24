@@ -13,7 +13,7 @@ with open(os.path.join(settings.BASE_DIR, 'ficha', 'static', 'json', 'responses.
 
 
 
-def geterror(request):
+def getstatus(request):
     if request.session.get('r'):
         r = responselist[ int(request.session.get('r')) ] if request.session.get('r') else None
         request.session.pop('r')
@@ -25,9 +25,18 @@ def geterror(request):
 
 
 def redir(request, r=None):
-    if request.session.get('userid'):
+    userid = request.session.get('userid')
+    if userid:
+        try:
+            get_object_or_404(Usuario, pk=userid)
+        except:
+            request.session.pop('userid', None)
+            request.session.flush()
+            request.session['r'] = 1
+            return redirect('/login/')
         if r is not None: request.session['r'] = r
         return redirect('/menu/')
+
     else:
         request.session['r'] = 1
         return redirect('/login/')
@@ -41,7 +50,8 @@ def menu(request):
     if not usuario.estado:
         cerrarSesion(request, disabled=True)
     
-    r = geterror(request)
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
     datos = {'usuario': usuario, 'r': r}
     return render(request, 'menu.html', datos)
     
@@ -69,7 +79,8 @@ def iniciarSesion(request):
         request.session['userid'] = usuario.id
         return redirect('menu')
     else:
-        r = geterror(request)
+        r = getstatus(request)
+        request.session['lasturl'] = request.get_full_path()
         return render(request, 'login.html' , {'r': r} )
 
 
@@ -106,7 +117,8 @@ def perfil(request):
     perfilself = (usuario.id == usuario_perfil.id)
     lastactions = HistorialAcciones.objects.filter(usuario=usuario_perfil).order_by('-fechacreacion')[:10]
 
-    r = geterror(request)
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
     datos = {'usuario': usuario, 'r': r, 'usuario_perfil': usuario_perfil, 'lastlog': lastlog, 'perfilself': perfilself, 'lastactions': lastactions}
     return render(request, 'perfil.html', datos)
 
@@ -118,12 +130,14 @@ def editarperfil(request):
     usuario = get_object_or_404(Usuario, pk=userid)
     id = int(request.GET.get('id', 1)) if request.GET.get('id') else usuario.id
     usuario_perfil = get_object_or_404(Usuario, pk=id)
+    perfilself = (usuario.id == usuario_perfil.id)
 
     if usuario.id != usuario_perfil.id and (usuario.rol or '').lower() != 'admin':
         return redir(request, r=5)
 
-    r = geterror(request)
-    datos = {'usuario': usuario, 'r': r, 'usuario_perfil': usuario_perfil}
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
+    datos = {'usuario': usuario, 'r': r, 'usuario_perfil': usuario_perfil, 'perfilself': perfilself}
     return render(request, 'editarperfil.html', datos)
 
 
@@ -140,7 +154,25 @@ def editarperfil_send(request, id):
     usuario_perfil.nombre =     request.POST['txtnom']
     usuario_perfil.apellido =   request.POST['txtape']
     usuario_perfil.correo =      request.POST['txtcor']
+    usuario_perfil.bio =         request.POST['txtbio']
     usuario_perfil.telefono =   request.POST['txttel']
+
+    if usuario.rol == 'admin' or usuario.id == usuario_perfil.id:
+        if request.POST['txtpassold'] != '': usuario_perfil.contraseña = hashlib.md5(request.POST['txtpassold'].encode('utf-8')).hexdigest()
+    else:
+        if usuario_perfil.contraseña == hashlib.md5(request.POST['txtpassold'].encode('utf-8')).hexdigest():
+            if request.POST['txtpass1'] == '' or request.POST['txtpass2'] == '':
+                request.session['r'] = 13
+                return redirect(f'/editarperfil/?id={usuario_perfil.id}')
+            if request.POST['txtpass1'] != request.POST['txtpass2']:
+                request.session['r'] = 14
+                return redirect(f'/editarperfil/?id={usuario_perfil.id}')
+            else:
+                usuario_perfil.contraseña = hashlib.md5(request.POST['txtpass1'].encode('utf-8')).hexdigest()
+        elif request.POST['txtpassold'] != '':
+            request.session['r'] = 12
+            return redirect(request.session.get('lasturl'))
+
     if (usuario.rol or '').lower() == 'admin':
         rol_post = request.POST.get('cborol')
         if rol_post:
@@ -148,14 +180,71 @@ def editarperfil_send(request, id):
         estado_post = request.POST.get('cboest')
         if estado_post is not None and estado_post != '':
             usuario_perfil.estado = estado_post
+    
+    cambios = {}
+    old_usuario_perfil = get_object_or_404(Usuario, pk=id)
+    for field in usuario_perfil._meta.fields:
+        fieldname = field.name
+        old_value = getattr(old_usuario_perfil, fieldname)
+        new_value = getattr(usuario_perfil, fieldname)
+        if old_value != new_value:
+            cambios[fieldname] = {'old': old_value, 'new': new_value}
+    print(cambios)
     usuario_perfil.save()
+    HistorialAcciones.objects.create(usuario=usuario, cambios=cambios,)
+    h = HistorialAcciones.objects.filter().order_by('-id').first()
+    h.accion=f'Perfil editado. <a href="/perfil/?id={usuario_perfil.id}">id: {usuario_perfil.id}</a> - <a href="/logcambios/?id={h.id}">[ Ver cambios ]</a>'
+    h.save()
+    
+
+    
+    
+    request.session['r'] = 7
+    return redirect(f'/perfil/?id={usuario_perfil.id}')
+
+
+def adduser(request):
+    userid = request.session.get('userid')
+    if not userid:
+        return redir(request)
+    usuario = get_object_or_404(Usuario, pk=userid)
+    rol = (usuario.rol or '').lower()
+    if rol != 'admin':
+        return redir(request, r=5)
+    
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
+    datos = {'usuario': usuario, 'r': r}
+    return render(request, 'addUser.html', datos)
+
+
+def adduser_send(request): 
+    userid = request.session.get('userid')
+    if not userid:
+        return redir(request)
+    usuario = get_object_or_404(Usuario, pk=userid)
+    rol = (usuario.rol or '').lower()
+    if rol != 'admin':
+        return redir(request, r=5)
+    
+    has = hashlib.md5(request.POST['txtpass'].encode('utf-8')).hexdigest()
+    nuevo_usuario = Usuario(
+        rut=        request.POST['txtrut'],
+        nombre=     request.POST['txtnombre'],
+        apellido=   request.POST['txtapellido'],
+        telefono=   request.POST['txttelefono'],
+        contraseña= has,
+        correo=     request.POST['txtcorreo'],
+        rol=        request.POST['cborol'],
+    )
+    nuevo_usuario.save()
 
     HistorialAcciones.objects.create(
                 usuario=usuario, 
-                accion='Perfil editado. id: {}'.format(usuario_perfil.id)
+                accion=f'Usuario creado. <a href="/perfil/?id={nuevo_usuario.id}">id: {nuevo_usuario.id}</a>'
     )
-    request.session['r'] = 7
-    return redirect(f'/perfil/?id={usuario_perfil.id}')
+    request.session['r'] = 11
+    return redirect(f'/perfil/?id={nuevo_usuario.id}')
 
 
 
@@ -169,7 +258,8 @@ def formulario(request):
     if rol != 'admin' and rol != 'paramedico':
         return redir(request, r=5)
     
-    r = geterror(request)
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
     datos = {'usuario': usuario, 'r': r}
     return render(request, 'formulario.html', datos)
 
@@ -205,7 +295,7 @@ def formulario_send(request):
 
     HistorialAcciones.objects.create(
                 usuario=usuario, 
-                accion='Ficha insertada. id: <a href="/verficha/{}">{}</a>'.format(ficha.id, ficha.id)
+                accion=f'Ficha insertada. <a href="/ficha/?id={ficha.id}">id: {ficha.id}</a>'
     )
     request.session['r'] = 8
     return redirect(f'/ficha/?id={ficha.id}')
@@ -223,7 +313,8 @@ def editarficha(request):
     id = int(request.GET.get('id', 1)) if request.GET.get('id') else 1
     ficha = get_object_or_404(Fichas, pk=id)
     
-    r = geterror(request)
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
     datos = {'usuario': usuario, 'r': r, 'ficha': ficha, 'edit': True}
     return render(request, 'formulario.html', datos)
 
@@ -255,12 +346,20 @@ def editarficha_send(request, id):
     ficha.tiposangre=         request.POST['cbosan']
     ficha.observaciones=      request.POST['txtobs']
 
-    ficha.save()
 
-    HistorialAcciones.objects.create(
-                usuario=usuario, 
-                accion='Ficha editada. id: {}'.format(ficha.id)
-    )
+    cambios = {}
+    old_ficha = get_object_or_404(Fichas, pk=id)
+    for field in ficha._meta.fields:
+        fieldname = field.name
+        old_value = getattr(old_ficha, fieldname)
+        new_value = getattr(ficha, fieldname)
+        if old_value != new_value:
+            cambios[fieldname] = {'old': old_value, 'new': new_value}
+    ficha.save()
+    HistorialAcciones.objects.create(usuario=usuario, cambios=cambios,)
+    h = HistorialAcciones.objects.filter().order_by('-id').first()
+    h.accion=f'Ficha editada. <a href="/ficha/?id={ficha.id}">id: {ficha.id}</a> - <a href="/logcambios/?id={h.id}">[ Ver cambios ]</a>'
+    h.save()
     request.session['r'] = 9
     return redirect(f'/ficha/?id={ficha.id}')
 
@@ -283,7 +382,7 @@ def eliminarficha(request, id):
     ficha.delete()
 
     request.session['r'] = 10
-    return redirect('/listado/')
+    return redirect(request.session.get('lasturl'))
 
 
 
@@ -297,15 +396,14 @@ def verficha(request):
 
     ficha = get_object_or_404(Fichas, pk=id)
 
-    r = geterror(request)
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
     datos = {'usuario': usuario, 'r': r, 'ficha': ficha}
     return render(request, 'Ficha.html', datos)
 
 
 def listado(request):
     userid = request.session.get('userid')
-    page = int(request.GET.get('page', 1)) or 1
-
     if not userid:
         return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
@@ -316,8 +414,14 @@ def listado(request):
     filter_kwargs = {}
 
     searchfilter = request.GET.get('fs', None) or None
+    exact = False
+    if searchfilter and searchfilter.startswith(':'):
+        searchfilter = searchfilter[1:]
+        exact=True
     search = request.GET.get('s', None) or None
-    filter_kwargs.update({f'{searchfilter}__icontains': search}) if searchfilter and search else None
+    filter_kwargs.update({f'{searchfilter}__{"iexact" if exact else "icontains"}': search}) if searchfilter and search else None
+    excludechecked = request.GET.get('ch', 'n') or 'n'
+    if excludechecked == 'y': filter_kwargs.update({'revisado': True})
 
     orderfilter = request.GET.get('fo', 'fechacreacion') or 'fechacreacion'
     order = request.GET.get('o', 'desc') or 'desc'
@@ -326,12 +430,14 @@ def listado(request):
     else: order = '-'
         
     page = int(request.GET.get('page', 1)) or 1
+    pagesize = 10
     fulllist = Fichas.objects.all().filter(**filter_kwargs).order_by(f'{order}{orderfilter}')
-    totalpages = (Fichas.objects.count() // 20) + (1 if Fichas.objects.count() % 20 > 0 else 0)
+    totalpages = (Fichas.objects.count() // pagesize) + (1 if Fichas.objects.count() % pagesize > 0 else 0)
     
-    r = geterror(request)
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
     datos = {'usuario': usuario, 'r': r,
-        'fichas': fulllist[ (page-1)*20 : page*20 ],
+        'fichas': fulllist[ (page-1)*pagesize : page*pagesize ],
         'page': page,
         'totalpages': totalpages,
         'totalresults': fulllist.count(),
@@ -346,13 +452,17 @@ def log(request):
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
     if rol != 'admin':
-        return redirect('/?r=5')
+        return redir(request, r=5)
     
     filter_kwargs = {}
 
     searchfilter = request.GET.get('fs', None) or None
+    exact = False
+    if searchfilter and searchfilter.startswith(':'):
+        searchfilter = searchfilter[1:]
+        exact=True
     search = request.GET.get('s', None) or None
-    filter_kwargs.update({f'{searchfilter}__icontains': search}) if searchfilter and search else None
+    filter_kwargs.update({f'{searchfilter}__{"iexact" if exact else "icontains"}': search}) if searchfilter and search else None
 
     orderfilter = request.GET.get('fo', 'fechacreacion') or 'fechacreacion'
     order = request.GET.get('o', 'desc') or 'desc'
@@ -360,16 +470,15 @@ def log(request):
     elif order == 'asc': order = ''
     else: order = '-'
 
-
-    
     page = int(request.GET.get('page', 1)) or 1
+    pagesize = 15
     fulllog = HistorialAcciones.objects.all().filter(**filter_kwargs).order_by(f'{order}{orderfilter}')
+    totalpages = (fulllog.count() // pagesize) + (1 if HistorialAcciones.objects.count() % pagesize > 0 else 0)
 
-    totalpages = (fulllog.count() // 20) + (1 if HistorialAcciones.objects.count() % 20 > 0 else 0)
-
-    r = geterror(request)
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
     datos = { 'usuario': usuario, 'r': r,
-        'log': fulllog[ (page-1)*20 : page*20 ],
+        'log': fulllog[ (page-1)*pagesize : page*pagesize ],
         'page': page,
         'totalpages': totalpages,
         'totalresults': fulllog.count(),
@@ -377,9 +486,19 @@ def log(request):
     return render(request, 'log.html', datos)
 
 
+def logcambios(request):
+    userid = request.session.get('userid')
+    if not userid:
+        return redirect('/login/?r=1')
+    usuario = get_object_or_404(Usuario, pk=userid)
+    if usuario.rol != 'admin':
+        return redir(request, r=5)
+    
+    id = int(request.GET.get('id', 1)) if request.GET.get('id') else 1
+    entry = HistorialAcciones.objects.get(pk=id)
+    
 
-
-
-
-
-
+    r = getstatus(request)
+    request.session['lasturl'] = request.get_full_path()
+    datos = {'usuario': usuario, 'r': r, 'entry': entry}
+    return render(request, 'Logcambios.html', datos)

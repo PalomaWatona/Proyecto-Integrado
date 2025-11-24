@@ -21,19 +21,19 @@
                         <option value="" selected disabled>Filtrar por...</option>
                         <option value="nombrepaciente" {% if request.GET.fs == 'nombrepaciente' %} selected {% endif %}>Nombre Paciente</option>
                         <option value="apellidopaciente" {% if request.GET.fs == 'apellidopaciente' %} selected {% endif %}>Apellido Paciente</option>
-                        <option value="rutpaciente" {% if request.GET.fs == 'rutpaciente' %} selected {% endif %}>RUT Paciente</option>
-                        <option value="usuario__rut" {% if request.GET.fs == 'usuario__rut' %} selected {% endif %}>RUT Médico</option>
-                        <option value="telefono" {% if request.GET.fs == 'telefono' %} selected {% endif %}>Teléfono</option>
-                        <option value="prevision" {% if request.GET.fs == 'prevision' %} selected {% endif %}>Previsión</option>
-                        <option value="genero" {% if request.GET.fs == 'genero' %} selected {% endif %}>Género</option>
-                        <option value="edad" {% if request.GET.fs == 'edad' %} selected {% endif %}>Edad</option>
+                        <option value=":rutpaciente" {% if request.GET.fs == ':rutpaciente' %} selected {% endif %}>RUT Paciente</option>
+                        <option value=":rutparamedico" {% if request.GET.fs == ':rutparamedico' %} selected {% endif %}>RUT Médico</option>
                         <option value="motivoconsulta" {% if request.GET.fs == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
+                        <option value=":telefono" {% if request.GET.fs == ':telefono' %} selected {% endif %}>Teléfono</option>
+                        <option value=":prevision" {% if request.GET.fs == ':prevision' %} selected {% endif %}>Previsión</option>
+                        <option value=":genero" {% if request.GET.fs == ':genero' %} selected {% endif %}>Género</option>
+                        <option value=":edad" {% if request.GET.fs == ':edad' %} selected {% endif %}>Edad</option>
                         <option value="comorbilidades" {% if request.GET.fs == 'comorbilidades' %} selected {% endif %}>Comorbilidades</option>
                         <option value="alergias" {% if request.GET.fs == 'alergias' %} selected {% endif %}>Alergias</option>
-                        <option value="frecuenciacardiaca" {% if request.GET.fs == 'frecuenciacardiaca' %} selected {% endif %}>Frecuencia cardiaca</option>
-                        <option value="temperatura" {% if request.GET.fs == 'temperatura' %} selected {% endif %}>Temperatura</option>
-                        <option value="presionararterial" {% if request.GET.fs == 'presionarterial' %} selected {% endif %}>Presión arterial</option>
-                        <option value="tiposangre" {% if request.GET.fs == 'tiposangre' %} selected {% endif %}>Tipo de sangre</option>
+                        <option value=":frecuenciacardiaca" {% if request.GET.fs == ':frecuenciacardiaca' %} selected {% endif %}>Frecuencia cardiaca</option>
+                        <option value=":temperatura" {% if request.GET.fs == ':temperatura' %} selected {% endif %}>Temperatura</option>
+                        <option value=":presionarterial" {% if request.GET.fs == ':presionarterial' %} selected {% endif %}>Presión arterial</option>
+                        <option value=":tiposangre" {% if request.GET.fs == ':tiposangre' %} selected {% endif %}>Tipo de sangre</option>
                         <option value="observaciones" {% if request.GET.fs == 'observaciones' %} selected {% endif %}>Observaciones</option>
                         <option value="fechacreacion" {% if request.GET.fs == 'fechacreacion' %} selected {% endif %}>Fecha de creación</option>          
                     </select>
@@ -47,12 +47,12 @@
                         <option value="nombrepaciente" {% if request.GET.fo == 'nombrepaciente' %} selected {% endif %}>Nombre Paciente</option>
                         <option value="apellidopaciente" {% if request.GET.fo == 'apellidopaciente' %} selected {% endif %}>Apellido Paciente</option>
                         <option value="rutpaciente" {% if request.GET.fo == 'rutpaciente' %} selected {% endif %}>RUT Paciente</option>
-                        <option value="usuario__rut" {% if request.GET.fo == 'usuario__rut' %} selected {% endif %}>RUT Médico</option>
+                        <option value="motivoconsulta" {% if request.GET.fo == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
+                        <option value="rutparamedico" {% if request.GET.fo == 'rutparamedico' %} selected {% endif %}>RUT Médico</option>
                         <option value="telefono" {% if request.GET.fo == 'telefono' %} selected {% endif %}>Teléfono</option>
                         <option value="prevision" {% if request.GET.fo == 'prevision' %} selected {% endif %}>Previsión</option>
                         <option value="genero" {% if request.GET.fo == 'genero' %} selected {% endif %}>Género</option>
                         <option value="edad" {% if request.GET.fo == 'edad' %} selected {% endif %}>Edad</option>
-                        <option value="motivoconsulta" {% if request.GET.fo == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
                         <option value="comorbilidades" {% if request.GET.fo == 'comorbilidades' %} selected {% endif %}>Comorbilidades</option>
                         <option value="alergias" {% if request.GET.fo == 'alergias' %} selected {% endif %}>Alergias</option>
                         <option value="frecuenciacardiaca" {% if request.GET.fo == 'frecuenciacardiaca' %} selected {% endif %}>Frecuencia cardiaca</option>
@@ -70,12 +70,11 @@
                 </div>
             </div>
             {% if fichas %}
-                <input type="hidden" id="totalpages" value="{{ totalpages }}">
-                <input type="hidden" id="page" value="{{ page }}">
+                <p class="lbl-results">Total registros: {{ totalresults }}</p>
                 <div id="pagination-container" class="pagination-container"></div>
                 <table class="table">
                     <tr >
-                        <th style="width: 30px;">ID</th>
+                        <th style="width: 15px;">ID</th>
                         <th style="width: 200px;">Nombre Completo</th>
                         <th style="width: 80px;">Genero</th>
                         <th style="width: 20px;">Edad</th>

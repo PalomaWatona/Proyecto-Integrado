@@ -10,6 +10,8 @@ urlpatterns = [
     path('perfil/', views.perfil, name='perfil'),
     path('editarperfil/', views.editarperfil, name='editarperfil'),
     path('editarperfil_send/<int:id>/', views.editarperfil_send, name='editarperfil_send'),
+    path('adduser/', views.adduser, name='adduser'),
+    path('adduser_send/', views.adduser_send, name='adduser_send'),
     path('login/', views.iniciarSesion, name='login'),
     path('logout/', views.cerrarSesion, name='logout'),
     path('formulario/', views.formulario, name='formulario'),
@@ -20,5 +22,6 @@ urlpatterns = [
     path('eliminarficha/<int:id>/', views.eliminarficha, name='eliminarficha'),
     path('ficha/', views.verficha, name='verficha'),
     path('log/', views.log, name='log'),
+    path('logcambios/', views.logcambios, name='logcambios'),
 ]
 

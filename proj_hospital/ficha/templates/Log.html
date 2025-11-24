@@ -49,12 +49,14 @@
                 <p class="lbl-results">Total registros: {{ totalresults }}</p>
                 <table class="table">
                     <tr >
+                        <th style="width: 12px;">ID</th>
                         <th style="width: 90px;">Usuario</th>
                         <th>Accion</th>
                         <th style="width: 190px;">Fecha</th>
                     </tr>
                 {% for x in log %}    
                     <tr class="align-middle">
+                        <td>{{ x.id }}</td>
                         <td><a class="rutuser" href="/perfil/?id={{ x.usuario.id }}" title="[{{ x.usuario.rut }}] {{ x.usuario.nombre }} {{ x.usuario.apellido }}">{{ x.usuario.rut }}</a></td>
                         <td>{{ x.accion|safe }}</td>
                         <td>{{ x.fechacreacion }}</td>

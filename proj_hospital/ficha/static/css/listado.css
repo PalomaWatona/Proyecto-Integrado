@@ -109,11 +109,12 @@
 
 
 .filters-select {
+    background-color: white;
     margin-right: 8px;
     padding: 6px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    max-width: 110px;
+    max-width: 120px;
     font-size: 12px;
 }
 .filters-select:focus {

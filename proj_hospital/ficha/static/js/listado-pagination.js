@@ -47,7 +47,7 @@ function createPagination(t, c, r=1){
             input.value = currentpage;
             input.style.width = "40px";
             input.addEventListener('input', () => {
-                input.value = input.value.replace(/\D/g, ''); // remove non-digits
+                input.value = input.value.replace(/\D/g, '');
             });
             input.addEventListener('keydown', (e) => {
                 if (e.key === "Enter") {

@@ -32,8 +32,14 @@
 
                 {% if usuario.rol|lower == 'admin' %}
                 <a href="/log/" class="menu-button">
-                    <img src="{% static 'svg/log.svg' %}" class="menu-icon" alt="Listado Icono">
+                    <img src="{% static 'svg/log.svg' %}" class="menu-icon" alt="Log Icono">
                     <span class="menu-text">Historial de acciones</span>
+                </a>
+                {% endif %}
+                {% if usuario.rol|lower == 'admin' %}
+                <a href="/adduser/" class="menu-button">
+                    <img src="{% static 'svg/useradd.svg' %}" class="menu-icon" alt="Añadir Usuario Icono">
+                    <span class="menu-text">Añadir Usuario</span>
                 </a>
                 {% endif %}
             </div>

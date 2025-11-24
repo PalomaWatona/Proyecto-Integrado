@@ -1,0 +1,76 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Hospital Rancagua</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+</head>
+<body>
+    {% include 'components/navbar.html' %}
+    {% include 'components/response.html' %}
+    <main>
+        <div class="maincard">
+            <label class="label-title">Añadir perfil</label>
+            <div class="form-container">
+                <form method="post" action="/adduser_send/">
+                    {% csrf_token %}
+
+                    <div class ="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Nombre</label>
+                            <input class="input-text" type="text" name="txtnombre" placeholder="Ingresa el Nombre" maxlength="80" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Apellido</label>
+                            <input class="input-text" type="text" name="txtapellido" placeholder="Ingresa el Apellido" maxlength="80" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Rut</label>
+                            <input class="input-text" type="text" name="txtrut" placeholder="Ingresa el Rut" maxlength="12" required>
+                        </div>
+                    </div>
+
+                    <div class ="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Contraseña</label>
+                            <input class="input-text" type="password" name="txtpass" placeholder="Ingresa la Contraseña" maxlength="80" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Correo</label>
+                            <input class="input-text" type="email" name="txtcorreo" placeholder="Ingresa el Correo" maxlength="120">
+                        </div>
+                    </div>
+
+                    
+                    <div class ="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Teléfono</label>
+                            <input class="input-phone" type="number" name="txttelefono" placeholder="Ingrese un teléfono (Ej: 9 1234 5678)" min="0" max="999999999">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Rol</label>
+                            <select class="input-select" name="cborol" required>
+                                <option value="" selected disabled>Selecciona un rol...</option>
+                                <option value="admin">Admin</option>
+                                <option value="paramedico">Paramedico</option>
+                                <option value="coordinador">Coordinador de urgencias</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="button-01">
+                            <span>Crear usuario</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    
+</body>
+</html>

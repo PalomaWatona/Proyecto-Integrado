@@ -42,8 +42,7 @@
 
 .table {
     width: 90%;
-    justify-self: center;
-    justify-content: center;
     border-collapse: collapse;
     margin-top: 10px;
+    margin-inline: auto;
 }

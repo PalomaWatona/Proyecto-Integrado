@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha #{{ ficha.id }} - Hospital Rancagua</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/ficha.css' %}">
+</head>
+<body>
+    {% include 'components/navbar.html' %}
+    {% include 'components/response.html' %}
+    <main>
+        <div class="maincard">
+            <label class="label-title">Cambios</label>
+            <div class="cardficha">
+                ID de la ficha: {{ entry.id }}<br/>
+                Usuario que realizó la acción: <a href="/perfil/?id={{ entry.usuario.id }}">{{ entry.usuario.rut }}</a><br>
+                Accion: {{ entry.accion|safe }}<br/>
+                Fecha de la acción: {{ entry.fechacreacion }}<br/><br/>
+                <br/>
+                {% if entry.cambios %}
+                    {% for campo, cambio in entry.cambios.items %}
+                        Campo modificado: {{ campo }}<br/>
+                        Antiguo valor: {{ cambio.old }}<br/>
+                        Nuevo valor: {{ cambio.new }}<br/><br/>
+                    {% endfor %}
+                {% else %}
+                    Sin cambios registrados.
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    <script>
+        function printpage() {
+            window.print()
+        }
+    </script>
+    
+</body>
+</html>
