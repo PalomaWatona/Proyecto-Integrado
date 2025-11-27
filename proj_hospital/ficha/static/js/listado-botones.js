@@ -16,6 +16,7 @@ function aplicarFiltros() {
     let link = "";
     const filter = document.getElementById('cbofilter').value;
     const search = document.getElementById('txtsearch').value;
+    const hidereviewed = document.getElementById('hidereviewed').checked;
     if (filter != "" && search != "") {
         link += `?fs=${filter}&s=${search}`;
     }
@@ -24,6 +25,8 @@ function aplicarFiltros() {
     if (orderBy != "") {
         link += (link ? '&' : '?') + `fo=${orderBy}&o=${order}`;
     }
+    if (hidereviewed) {link += (link ? '&' : '?') + "rv=y";}
+    else {link += (link ? '&' : '?') + "rv=n";}
     window.location.href = link;
 }
 

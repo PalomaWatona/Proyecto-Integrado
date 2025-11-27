@@ -68,7 +68,7 @@
                     <div class="input-group">
                         <label class="input-label">Bio</label>
                         <div class="input-txtarea">
-                            <textarea name="txtbio" placeholder="Observaciones adicionales" maxlength="2000">{{ usuario_perfil.bio }}</textarea>
+                            <textarea name="txtbio" placeholder="Observaciones adicionales" maxlength="200">{{ usuario_perfil.bio }}</textarea>
                         </div>
                     </div>
                     {% if usuario.rol|lower == 'admin' %}

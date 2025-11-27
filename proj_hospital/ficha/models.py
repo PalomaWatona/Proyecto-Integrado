@@ -2,8 +2,8 @@ from django.db import models
 
     
 class Fichas(models.Model):
-    nombrepaciente = models.CharField(max_length=50, default='')
-    apellidopaciente = models.CharField(max_length=50, default='')
+    nombrepaciente = models.CharField(max_length=80, default='')
+    apellidopaciente = models.CharField(max_length=80, default='')
     rutpaciente = models.CharField(max_length=12, default='')
     rutparamedico = models.CharField(max_length=12, default='')
     telefono = models.CharField(max_length=9, default='')

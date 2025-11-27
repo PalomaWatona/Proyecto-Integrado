@@ -152,6 +152,44 @@
 }.filters-button:hover {
     background-color: #21ADAC;
 }
+.filters-checkboxgroup {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* 1. Oculta el input nativo */
+.filters-checkboxgroup input{
+    display:none;
+}.filters-checkboxgroup label{
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    font-size: 12px;
+    width: 80px;
+    padding-left: 30px;
+    user-select: none;
+}.filters-checkboxgroup label::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff; /* Borde gris suave por defecto */
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 50%; /* ¡Esto lo hace un círculo! */
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
+}.filters-checkboxgroup input:checked + label::before {
+    background-color: #4CAF50; /* ¡Fondo verde! */
+}
+
+/* 5. Muestra la marca cuando está marcado */
+.filters-checkboxgroup input:checked + label::after {
+    display: block;
+}
+
 
 
 
@@ -202,3 +240,49 @@
     box-shadow: 0 0 0 2px #53968f7a;
 }
 
+
+
+.table-phonetext {
+    display: none;
+    padding-right: 5px;
+}
+
+@media (max-width: 1150px) {
+    .filters{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .filters-left, .filters-right, .pagination {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    .pagination {
+        order: 2;
+    }
+
+    .table th, .table td {
+        padding: 8px 8px;
+        display: flex;
+        width: 100%;
+    }
+    .tdbuttons{
+        height: 90px;
+    }
+    .tdbutton {
+        height: 64px;
+        width:  64px;
+    }
+    .tdbutton-icon{
+        width: 48px;
+        height: 48px;
+    }
+    .table th {
+        display: none;
+    }
+    .table-phonetext {
+        display: inline;
+    }
+}

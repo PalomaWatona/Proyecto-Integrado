@@ -6,20 +6,41 @@
 
 .perfil-izquierdo {
     float: left;
-    width: 300px;
+    width: 250px;
     padding: 10px;
     text-align: center;
 }
 .perfil-centro {
     float: left;
+    width: calc(100% - 500px);
     padding: 10px;
 }
 .perfil-derecho {
     float: right;
-    width: 200px;
+    width: 100px;
     padding: 10px;
     text-align: center;
 }
+.perfil-pfp {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.perfil-bio{
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ececec;
+    border-radius: 8px;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
+    font-size: 16px;
+    font-weight: 200;
+    line-height: 1.2;
+}
+
+
 
 .p-text {
     font-size: 18px;

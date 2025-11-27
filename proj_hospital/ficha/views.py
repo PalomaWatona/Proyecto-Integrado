@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.shortcuts import redirect
 from django.conf import settings
+from django.views.decorators.cache import never_cache
 from django.utils.timezone import localdate
 from ficha.models import HistorialAcciones, Usuario
 from ficha.models import Fichas
@@ -157,7 +158,7 @@ def editarperfil_send(request, id):
     usuario_perfil.bio =         request.POST['txtbio']
     usuario_perfil.telefono =   request.POST['txttel']
 
-    if usuario.rol == 'admin' or usuario.id == usuario_perfil.id:
+    if usuario.rol == 'admin' and usuario.id != usuario_perfil.id:
         if request.POST['txtpassold'] != '': usuario_perfil.contraseña = hashlib.md5(request.POST['txtpassold'].encode('utf-8')).hexdigest()
     else:
         if usuario_perfil.contraseña == hashlib.md5(request.POST['txtpassold'].encode('utf-8')).hexdigest():
@@ -301,17 +302,19 @@ def formulario_send(request):
     return redirect(f'/ficha/?id={ficha.id}')
 
 
-def editarficha(request):
+def editarficha(request, self = False):
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
     if rol != 'admin' and rol != 'coordinador':
-        return redir(request, r=5)
+        self = True
     
     id = int(request.GET.get('id', 1)) if request.GET.get('id') else 1
     ficha = get_object_or_404(Fichas, pk=id)
+    if self and ficha.rutparamedico != usuario.rut:
+        return redir(request, r=5)
     
     r = getstatus(request)
     request.session['lasturl'] = request.get_full_path()
@@ -326,9 +329,11 @@ def editarficha_send(request, id):
     usuario = get_object_or_404(Usuario, pk=userid)
     rol = (usuario.rol or '').lower()
     if rol != 'admin' and rol != 'coordinador':
-        return redir(request, r=5)
+        self = True
 
     ficha = get_object_or_404(Fichas, pk=id)
+    if self and ficha.rutparamedico != usuario.rut:
+        return redir(request, r=5)
 
     ficha.nombrepaciente=     request.POST['txtnompa']
     ficha.apellidopaciente=   request.POST['txtapepa']
@@ -387,6 +392,7 @@ def eliminarficha(request, id):
 
 
 
+
 def verficha(request):
     userid = request.session.get('userid')
     if not userid:
@@ -402,7 +408,7 @@ def verficha(request):
     return render(request, 'Ficha.html', datos)
 
 
-def listado(request):
+def cambioestado(request, id):
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -410,6 +416,26 @@ def listado(request):
     rol = (usuario.rol or '').lower()
     if rol != 'admin' and rol != 'coordinador':
         return redir(request, r=5)
+    
+    ficha = get_object_or_404(Fichas, pk=id)
+    ficha.revisado = not ficha.revisado
+    ficha.save()
+
+    HistorialAcciones.objects.create(
+                usuario=usuario, 
+                accion=f'Ficha {"marcada como revisada" if ficha.revisado else "marcada como no revisada"}. <a href="/ficha/?id={ficha.id}">id: {ficha.id}</a>'
+    )
+    return redirect(request.session.get('lasturl'))
+
+
+def listado(request, self = False):
+    userid = request.session.get('userid')
+    if not userid:
+        return redir(request)
+    usuario = get_object_or_404(Usuario, pk=userid)
+    rol = (usuario.rol or '').lower()
+    if rol != 'admin' and rol != 'coordinador':
+        self = True
     
     filter_kwargs = {}
 
@@ -420,8 +446,10 @@ def listado(request):
         exact=True
     search = request.GET.get('s', None) or None
     filter_kwargs.update({f'{searchfilter}__{"iexact" if exact else "icontains"}': search}) if searchfilter and search else None
-    excludechecked = request.GET.get('ch', 'n') or 'n'
-    if excludechecked == 'y': filter_kwargs.update({'revisado': True})
+    hidereviewed = request.GET.get('rv', 'y') or 'y'
+    if hidereviewed == 'y': filter_kwargs.update({'revisado': False})
+    if self:
+        filter_kwargs.update({'rutparamedico': usuario.rut})
 
     orderfilter = request.GET.get('fo', 'fechacreacion') or 'fechacreacion'
     order = request.GET.get('o', 'desc') or 'desc'
@@ -441,6 +469,7 @@ def listado(request):
         'page': page,
         'totalpages': totalpages,
         'totalresults': fulllist.count(),
+        'self': self
     }
     return render(request, 'Listado.html', datos)
 

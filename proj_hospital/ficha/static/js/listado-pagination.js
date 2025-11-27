@@ -1,6 +1,5 @@
 
 
-paginationContainer.innerHTML = "";
 
 
 
@@ -19,13 +18,13 @@ function createButton(label, page, disabled = false) {
 
 
 
-function createPagination(t, c, r=1){
+function createPagination(idcontainer, t, c, r=1){
 
     const totalpages = parseInt(t);
     if (totalpages <= 1) return;
 
     const currentpage = parseInt(c);
-    const paginationContainer = document.getElementById('pagination');
+    const paginationContainer = document.getElementById(idcontainer);
 
 
     if (currentpage != 1) {

@@ -18,6 +18,7 @@ html, body{
     margin: 0px;
     width: calc(100% - 48px);
     height: 110px;
+    z-index: 5000;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px;
 }
 

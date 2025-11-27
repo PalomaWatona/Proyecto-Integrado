@@ -21,8 +21,8 @@
                         <option value="" selected disabled>Filtrar por...</option>
                         <option value="nombrepaciente" {% if request.GET.fs == 'nombrepaciente' %} selected {% endif %}>Nombre Paciente</option>
                         <option value="apellidopaciente" {% if request.GET.fs == 'apellidopaciente' %} selected {% endif %}>Apellido Paciente</option>
-                        <option value=":rutpaciente" {% if request.GET.fs == ':rutpaciente' %} selected {% endif %}>RUT Paciente</option>
-                        <option value=":rutparamedico" {% if request.GET.fs == ':rutparamedico' %} selected {% endif %}>RUT Médico</option>
+                        <option value="rutpaciente" {% if request.GET.fs == 'rutpaciente' %} selected {% endif %}>RUT Paciente</option>
+                        {% if not self %}<option value="rutparamedico" {% if request.GET.fs == 'rutparamedico' %} selected {% endif %}>RUT Médico</option>{% endif %}
                         <option value="motivoconsulta" {% if request.GET.fs == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
                         <option value=":telefono" {% if request.GET.fs == ':telefono' %} selected {% endif %}>Teléfono</option>
                         <option value=":prevision" {% if request.GET.fs == ':prevision' %} selected {% endif %}>Previsión</option>
@@ -38,6 +38,10 @@
                         <option value="fechacreacion" {% if request.GET.fs == 'fechacreacion' %} selected {% endif %}>Fecha de creación</option>          
                     </select>
                     <input class="filters-search" type="text" id="txtsearch" placeholder="Término de búsqueda" value="{% if request.GET.s %}{{ request.GET.s }}{% endif %}">
+                    <div class="filters-checkboxgroup">
+                        <input type="checkbox" id="hidereviewed" {% if request.GET.rv != 'n' %} checked {% endif %}>
+                        <label for="hidereviewed">Ocultar fichas revisadas</label>
+                    </div>
                 </div>
                 <div id="pagination" class="pagination"></div>
                 <div class="filters-right">
@@ -48,7 +52,7 @@
                         <option value="apellidopaciente" {% if request.GET.fo == 'apellidopaciente' %} selected {% endif %}>Apellido Paciente</option>
                         <option value="rutpaciente" {% if request.GET.fo == 'rutpaciente' %} selected {% endif %}>RUT Paciente</option>
                         <option value="motivoconsulta" {% if request.GET.fo == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
-                        <option value="rutparamedico" {% if request.GET.fo == 'rutparamedico' %} selected {% endif %}>RUT Médico</option>
+                        {% if not self %}<option value="rutparamedico" {% if request.GET.fo == 'rutparamedico' %} selected {% endif %}>RUT Médico</option>{% endif %}
                         <option value="telefono" {% if request.GET.fo == 'telefono' %} selected {% endif %}>Teléfono</option>
                         <option value="prevision" {% if request.GET.fo == 'prevision' %} selected {% endif %}>Previsión</option>
                         <option value="genero" {% if request.GET.fo == 'genero' %} selected {% endif %}>Género</option>
@@ -71,7 +75,6 @@
             </div>
             {% if fichas %}
                 <p class="lbl-results">Total registros: {{ totalresults }}</p>
-                <div id="pagination-container" class="pagination-container"></div>
                 <table class="table">
                     <tr >
                         <th style="width: 15px;">ID</th>
@@ -83,13 +86,13 @@
                         <th style="width: 50px;"></th>
                     </tr>
                 {% for x in fichas %}    
-                    <tr class="align-middle">
-                        <td>{{ x.id }}</td>
-                        <td>{% if  not x.nombrepaciente and not x.apellidopaciente %} n/a {% else %} {% if x.nombrepaciente %} {{ x.nombrepaciente }} {% else %} -- {% endif %} {{ x.apellidopaciente }} {% endif %}</td>
-                        <td>{{ x.genero }}</td>
-                        <td>{{ x.edad }}</td>
-                        <td>{{ x.motivoconsulta }}</td>
-                        <td>{{ x.fechacreacion }}</td>
+                    <tr class="align-middle" style="background-color: {% if x.revisado %} #ebebebff {% endif %};">
+                        <td><div class="table-phonetext">Id:</div>{{ x.id }}</td>
+                        <td><div class="table-phonetext">Nombre Completo:</div>{% if  not x.nombrepaciente and not x.apellidopaciente %} n/a {% else %} {% if x.nombrepaciente %} {{ x.nombrepaciente }} {% else %} -- {% endif %} {{ x.apellidopaciente }} {% endif %}</td>
+                        <td><div class="table-phonetext">Genero:</div>{{ x.genero }}</td>
+                        <td><div class="table-phonetext">Edad:</div>{{ x.edad }}</td>
+                        <td><div class="table-phonetext">Motivo de consulta:</div>{{ x.motivoconsulta }}</td>
+                        <td><div class="table-phonetext">Fecha:</div>{{ x.fechacreacion }}</td>
                         <td class="tdbuttons">
                             {% if usuario.rol|lower == 'admin' %}
                                 <button type="button" class= "tdbutton" title="Eliminar ficha" onClick="botonEliminar({{ x.id }})">
@@ -108,6 +111,9 @@
                     </tr>
                 {% endfor %}
                 </table>
+                <div class="filters">
+                    <div id="pagination2" class="pagination"></div>
+                </div>
             {% else %}
                 <label class="txtnotfound">No hay registros de fichas para mostrar</label>
             {% endif %}
@@ -118,6 +124,6 @@
 <script src="{% static 'js/listado-botones.js' %}"></script>
 <script src="{% static 'js/listado-pagination.js' %}"></script>
 
-<script>createPagination({{ totalpages }}, {{ page }}, 1 );</script>
+<script>createPagination("pagination", {{ totalpages }}, {{ page }}, 1 );</script>
 </body>
 </html>

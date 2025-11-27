@@ -6,5 +6,6 @@
     margin-inline: 80px;
     margin-block: 16px;
     border-radius: 4px;
+    overflow-wrap: break-word;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
 }

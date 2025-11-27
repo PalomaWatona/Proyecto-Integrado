@@ -16,6 +16,7 @@
         <div class="maincard">
             <label class="label-title">Ficha</label>
             <div class="cardficha">
+                {% if ficha.revisado == True %}<p class="ficha-revisado">[[ REVISADO ]]</p><br/>{% endif %}
                 ID de ficha: {{ ficha.id }} <br/>
                 Fecha de creación: {{ ficha.fechacreacion }} <br/>
                 Rut del paramedico: {{ ficha.rutparamedico }} <br/>
@@ -37,6 +38,10 @@
                 <br/>
                 Observaciones: {{ ficha.observaciones }} <br/>
             </div>
+            {% if usuario.rol|lower == 'admin' or usuario.rol|lower == 'coordinador' %}
+            <button class="button-01" onclick="window.location.href='/cambioestado/{{ ficha.id }}/'">Cambiar Estado</button>
+            {% endif %}
+            <button class="button-01" onclick="window.location.href='/editarficha/?id={{ ficha.id }}'">Editar Ficha</button>
             <button class="button-01" onclick="printpage()">Imprimir Ficha</button>
         </div>
     </main>
