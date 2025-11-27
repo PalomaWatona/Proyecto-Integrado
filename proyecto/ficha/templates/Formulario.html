@@ -1,0 +1,168 @@
+{% load static %}
+<!-- Carga los archivos CSS y JS -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de ficha - Hospital Rancagua</title>
+
+    <!-- Enlace al archivo CSS main -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Enlace al archivo CSS del formulario -->
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+</head>
+
+<body>
+    <!-- Incluye el componente de la barra de navegación -->
+    {% include 'components/navbar.html' %}
+    <!-- Incluye un componente para mostrar mensajes de respuesta y notificación -->
+    {% include 'components/response.html' %}
+
+    <main>
+        <!-- Contenedor principal -->
+        <div class="maincard">
+        <label class="label-title">Formulario</label>
+            <div class="form-container">
+                <!-- La acción cambia si es modo edición ('edit' True) o nuevo registro -->
+                <form method="post" action="{% if edit %}/editarficha_send/{{ ficha.id }}/{% else %}/formulario_send/{% endif %}">
+                    {% csrf_token %}
+
+                    <!-- Campos de la Información del Paciente (Si se esta en el modo edicion los campos se precargan)-->
+                    <div class="input-group">
+                        <label class="input-label">Nombre Del Paciente</label>
+                        <input class="input-text" type="text" name="txtnompa" placeholder="Ingresa el Nombre del Paciente" maxlength="80"
+                        {% if edit %} value="{{ ficha.nombrepaciente }}" {% endif %}> 
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Apellido Del Paciente</label>
+                        <input class="input-text" type="text" name="txtapepa" placeholder="Ingresa el Apellido del Paciente" maxlength="80"
+                        {% if edit %} value="{{ ficha.apellidopaciente }}" {% endif %}>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Rut Del Paciente</label>
+                        <input class="input-text" type="text" name="txtrutpa" placeholder="Ingresa el Rut del Paciente" maxlength="12"
+                        {% if edit %} value="{{ ficha.rutpaciente }}" {% endif %}>
+
+                    </div>
+
+                    <!-- Contenedor doble -->
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Edad *</label>
+                            <input class="input-number"type="number" name="txteda" placeholder="Ingrese la edad ( estimado )" min="0" max="120" required
+                            {% if edit %} value="{{ ficha.edad }}" {% endif %}>
+                        </div> 
+                        <div class="input-group">
+                            <label class="input-label">Teléfono</label>
+                            <input class="input-phone" type="number" name="txttel" placeholder="Ingrese un teléfono (Ej: 9 1234 5678)" min="0" max="999999999"
+                            {% if edit %} value="{{ ficha.telefono }}" {% endif %}>
+                        </div>
+                    </div>
+
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Género *</label>
+                            <select class="input-select" name="cbogen" required>
+                                <option value="">-Elija el Genero del paciente-</option>
+                                <option value="masculino" {% if edit and ficha.genero == "masculino" %} selected {% endif %}>Masculino</option>
+                                <option value="femenino" {% if edit and ficha.genero == "femenino" %} selected {% endif %}>Femenino</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Previsión</label>
+                            <select class="input-select" name="cbopre">
+                                <option value="">-Elija una prevision-</option>
+                                <option value="Fonasa" {% if edit and ficha.prevision == "Fonasa" %} selected {% endif %}>Fonasa</option>
+                                <option value="Isapre" {% if edit and ficha.prevision == "Isapre" %} selected {% endif %}>Isapre</option>
+                                <option value="Dipreca" {% if edit and ficha.prevision == "Dipreca" %} selected {% endif %}>Dipreca</option>
+                                <option value="Particular" {% if edit and ficha.prevision == "Particular" %} selected {% endif %}>Particular</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Motivo de consulta *</label>
+                        <input class="input-text" type="text" name="txtmot" placeholder="Ingrese el motivo de consulta" required 
+                        {% if edit %} value="{{ ficha.motivoconsulta }}" {% endif %}>
+                    </div>
+
+                    <!-- Campos de Antecedentes Médicos -->
+
+                    <div class="input-group">
+                        <label class="input-label">Comorbilidades</label>
+                        <input class="input-text" type="text" name="txtcom" placeholder="Ingrese comorbilidades" 
+                        {% if edit %} value="{{ ficha.comorbilidades }}" {% endif %}>
+                    </div>
+
+
+                    <div class="input-group">
+                        <label class="input-label">Alergia</label>
+                        <input class="input-text" type="text" name="txtale" placeholder="Ingrese alergias (opcional)" 
+                        {% if edit %} value="{{ ficha.alergias }}" {% endif %}>
+                    </div>
+                    
+                    <!-- Campos de Signos Vitales -->
+
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Frecuencia Cardiaca ( lpm )</label>
+                            <input class="input-number" type="number" name="txtfre" placeholder="89" min="0" max="200"
+                            {% if edit %} value="{{ ficha.frecuenciacardiaca }}" {% endif %}>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Temperatura ( °C )</label>
+                            <input class="input-number" type="number" name="txttem" id="txttem" placeholder="36°C" min="-30" max="150"
+                            {% if edit %} value="{{ ficha.temperatura }}" {% endif %}>
+                        </div>
+                    </div>
+
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Presion Arterial ( mmHg )</label>
+                            <input class="input-number" type="number" name="txtpre" placeholder="90" min="0" max="300"
+                            {% if edit %} value="{{ ficha.presionarterial }}" {% endif %}>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Tipo de Sangre</label>
+                            <select class="input-select" name="cbosan">
+                                <option value="">-Elija un tipo de sangre-</option>
+                                <option value="A+" {% if edit and ficha.tiposangre == "A+" %} selected {% endif %}>A+</option>
+                                <option value="A-" {% if edit and ficha.tiposangre == "A-" %} selected {% endif %}>A-</option>
+                                <option value="B+" {% if edit and ficha.tiposangre == "B+" %} selected {% endif %}>B+</option>
+                                <option value="B-" {% if edit and ficha.tiposangre == "B-" %} selected {% endif %}>B-</option>
+                                <option value="AB+" {% if edit and ficha.tiposangre == "AB+" %} selected {% endif %}>AB+</option>
+                                <option value="AB-" {% if edit and ficha.tiposangre == "AB-" %} selected {% endif %}>AB-</option>
+                                <option value="O+" {% if edit and ficha.tiposangre == "O+" %} selected {% endif %}>O+</option>
+                                <option value="O-" {% if edit and ficha.tiposangre == "O-" %} selected {% endif %}>O-</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Observaciones</label>
+                        <div class="input-txtarea">
+                            <textarea name="txtobs" placeholder="Observaciones adicionales" maxlength="2000">{% if edit %}{{ ficha.observaciones }}{% endif %}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Boton de envio. El texto cambia dependiendo si es modo edición o nuevo registro -->
+                    <button type="submit" class="button-01">
+                        <span>{% if edit %}Actualizar ficha{% else %}Enviar ficha{% endif %}</span>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+
+</body>
+
+</html>

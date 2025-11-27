@@ -1,0 +1,71 @@
+{% load static %}
+<!-- Carga los archivos CSS y el JS -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha #{{ ficha.id }} - Hospital Rancagua</title>
+
+    <!-- Enlace al archivo CSS main -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Enlace al archivo CSS de la Ficha -->
+    <link rel="stylesheet" href="{% static 'css/ficha.css' %}">
+</head>
+<body>
+    <!-- Incluye el componente de la barra de navegación -->
+    {% include 'components/navbar.html' %}
+    <!-- Incluye un componente para mostrar mensajes de respuesta y notificación -->
+    {% include 'components/response.html' %}
+
+    <main>
+        <!-- Contenedor principal -->
+        <div class="maincard">
+            <label class="label-title">Ficha</label>
+            <!-- Contenedor que muestra los datos de la ficha -->
+            <div class="cardficha">
+                <!-- Si algun campo esta vacio lo muestra como 'n/a' o tambien no aparece si esta vacio-->
+                <!-- Condicion: Muestra una etiqueta si la ficha ha sido revisada -->
+                {% if ficha.revisado == True %}<p class="ficha-revisado">[[ REVISADO ]]</p><br/>{% endif %}
+                ID de ficha: {{ ficha.id }} <br/>
+                Fecha de creación: {{ ficha.fechacreacion }} <br/>
+                Rut del paramedico: {{ ficha.rutparamedico }} <br/>
+                <br/>
+                Nombre: {% if ficha.nombrepaciente %} {{ ficha.nombrepaciente }} {% else %} n/a {% endif %} <br/>
+                Apellido: {% if ficha.apellidopaciente %} {{ ficha.apellidopaciente }} {% else %} n/a {% endif %} <br/>
+                Rut: {% if ficha.rutpaciente %} {{ ficha.rutpaciente }} {% else %} n/a {% endif %} <br/>
+                Edad: {{ ficha.edad }} <br/>
+                Género: {{ ficha.genero }} <br/>
+                Teléfono: {% if ficha.telefono %} {{ ficha.telefono }} {% else %} n/a {% endif %} <br/>
+                <br/>
+                Motivo de consulta: {{ ficha.motivoconsulta }} <br/>
+                {% if ficha.comorbilidades %} Comorbilidades: {{ ficha.comorbilidades }} <br/>{% endif %} 
+                {% if ficha.alergias %}Alergias: {{ ficha.alergias }} <br/>{% endif %} 
+                {% if ficha.frecardiaca %} Frecuencia Cardiaca: {{ ficha.frecardiaca }}lpm <br/>{% endif %} 
+                {% if ficha.temperatura %} Temperatura: {{ ficha.temperatura }}°C <br/>{% endif %} 
+                {% if ficha.presionarterial %} Presión Arterial: {{ ficha.presionarterial }}mmHg <br/>{% endif %} 
+                {% if ficha.tiposangre %} Tipo de Sangre: {{ ficha.tiposangre }} <br/>{% endif %}
+                <br/>
+                Observaciones: {{ ficha.observaciones }} <br/>
+            </div>
+
+            <!-- Condicion: Muestra el boton 'Cambiar Estado' solo si el usuario tiene rol 'admin' o 'coordinador' -->
+            {% if usuario.rol|lower == 'admin' or usuario.rol|lower == 'coordinador' %}
+            <button class="button-01" onclick="window.location.href='/cambioestado/{{ ficha.id }}/'">Cambiar Estado</button>
+            {% endif %}
+            <button class="button-01" onclick="window.location.href='/editarficha/?id={{ ficha.id }}'">Editar Ficha</button>
+            <!-- Boton para imprimir la ficha -->
+            <button class="button-01" onclick="printpage()">Imprimir Ficha</button>
+        </div>
+    </main>
+
+    <!-- La Funcion llama al metodo de impresión del navegador -->
+    <script>
+        function printpage() {
+            window.print()
+        }
+    </script>
+    
+</body>
+</html>

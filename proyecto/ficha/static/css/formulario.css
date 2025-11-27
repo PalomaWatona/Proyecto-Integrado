@@ -1,0 +1,143 @@
+.input-doublegroup {
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+
+}
+
+.input-group{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+
+
+.form-container{
+    max-width: 900px;
+    margin: 0 auto;
+}
+.input-label {
+    font-weight: 600;
+    margin-top: 20px;
+    margin-bottom: 2px;
+    font-size: 20px;
+    line-height: 24.8px;
+    color: rgb(0, 0, 0);
+    display: block;
+}
+
+.input-text {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 14px;
+    resize: vertical;
+    transition: 0.3s all;
+}.input-text:focus-within {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px rgba(83, 150, 143, 0.2);
+}
+
+.input-number {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 14px;
+    resize: vertical;
+    transition: 0.3s all;
+}.input-number:focus-within {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px rgba(83, 150, 143, 0.2);
+}
+
+.input-phone {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 14px;
+    resize: vertical;
+    transition: 0.3s all;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}.input-phone:focus-within {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px rgba(83, 150, 143, 0.2);
+}
+.input-phone::-webkit-inner-spin-button,
+.input-phone::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-select {
+    padding: 8px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 14px;
+    resize: vertical;
+    transition: 0.3s all;
+}.input-select:focus-within {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px rgba(83, 150, 143, 0.2);
+}
+
+.input-txtarea {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 14px;
+    line-height: 22px;
+    border-radius: 10px;
+    transition: 0.2s all;
+    background: rgb(255, 255, 255);
+    border: 0.8px solid rgb(217, 217, 217);
+    height: 120px;
+    resize: none;
+}
+
+.input-txtarea textarea {
+    resize: none;
+    font-size: 14px;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    background: transparent;
+    color: rgba(0, 0, 0, 0.88);
+    height: 100%;
+    max-width: 100%;
+    min-height: 32px;
+    line-height: 22px;
+    transition: 0.3s all;
+    margin: 0;
+    padding: 4px 11px;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+.input-txtarea:focus-within {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px rgba(83, 150, 143, 0.2);
+}
+
+@media (max-width: 600px) {
+    .input-label {
+        font-weight: 600;
+        margin-top: 20px;
+        margin-bottom: 2px;
+        font-size: 12px;
+        line-height: 24.8px;
+        color: rgb(0, 0, 0);
+        display: block;
+    }
+}

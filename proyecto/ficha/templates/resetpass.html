@@ -1,0 +1,94 @@
+{% load static %}
+<!-- Carga los archivos CSS y el JS. -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Hospital Rancagua</title>
+
+    <!--Enlace al archivo CSS main -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+    <!-- Enlace al archivo CSS específico para los formularios. -->
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+</head>
+<body>
+
+    <!-- Incluye el componente de la barra de navegación. -->
+    {% include 'components/navbar.html' %}
+    <!-- Incluye el componente para mostrar mensajes de estado o notificaciones (usando la variable 'r'). -->
+    {% include 'components/response.html' %}
+    
+    <main>
+        <!-- Contenedor principal -->
+        <div class="maincard">
+            <label class="label-title">Añadir perfil</label>
+            <div class="form-container">
+                <!-- Inicio del formulario. El método POST enviará los datos a la URL /adduser_send/. -->
+                <form method="post" action="/adduser_send/">
+                    {% csrf_token %}
+
+                    <!-- Grupo de campos dobles (Para organizar). -->
+                    <div class ="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Nombre</label>
+                            <input class="input-text" type="text" name="txtnombre" placeholder="Ingresa el Nombre" maxlength="80" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Apellido</label>
+                            <input class="input-text" type="text" name="txtapellido" placeholder="Ingresa el Apellido" maxlength="80" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Rut</label>
+                            <input class="input-text" type="text" name="txtrut" placeholder="Ingresa el Rut" maxlength="12" required>
+                        </div>
+                    </div>
+
+                    <!-- Segundo grupo de campos dobles. -->
+                    <div class ="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Contraseña</label>
+                            <!-- Campo de tipo 'password', el valor será cifrado en 'adduser_send'. -->
+                            <input class="input-text" type="password" name="txtpass" placeholder="Ingresa la Contraseña" maxlength="80" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Correo</label>
+                            <input class="input-text" type="email" name="txtcorreo" placeholder="Ingresa el Correo" maxlength="120">
+                        </div>
+                    </div>
+
+                    
+                    <!-- Tercer grupo de campos dobles. -->
+                    <div class ="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Teléfono</label>
+                            <!-- Campo de tipo 'number' para asegurar entrada numérica. -->
+                            <input class="input-phone" type="number" name="txttelefono" placeholder="Ingrese un teléfono (Ej: 9 1234 5678)" min="0" max="999999999">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Rol</label>
+                            <!-- Selector para asignar el nivel de acceso (rol) del nuevo usuario. -->
+                            <select class="input-select" name="cborol" required>
+                                <option value="" selected disabled>Selecciona un rol...</option>
+                                <option value="admin">Admin</option>
+                                <option value="paramedico">Paramedico</option>
+                                <option value="coordinador">Coordinador de urgencias</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Botón para enviar el formulario y crear el usuario. -->
+                    <button type="submit" class="button-01">
+                        <span>Crear usuario</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    
+</body>
+</html>

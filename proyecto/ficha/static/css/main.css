@@ -1,0 +1,255 @@
+html, body{
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.navb {
+    position: fixed;
+    top: 0px;
+    background-color: #ffffff;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    padding-block: 10px;
+    padding-inline: 24px;
+    margin: 0px;
+    width: calc(100% - 48px);
+    height: 110px;
+    z-index: 5000;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px;
+}
+
+.logo{
+    width: 250px;
+}
+
+.usuario-info {
+    display: flex;
+    align-items: center;
+}
+
+.usuario-nombre {
+    font-size: 20px;
+    color: #333333;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+.usuario-cerrarsesion {
+    display: inline-block;
+    padding: 8px 24px;
+    background-color: #93C01E;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 4px;
+}.usuario-cerrarsesion:hover {
+    background-color: #21ADAC;
+}
+
+
+
+
+main{
+    display: block;
+    margin-inline:20px;
+}
+
+.maincard {
+    background-color: white;
+    max-width: 1200px;
+    margin-inline: auto;
+    margin-top: 180px;
+    min-height: calc(100vh - 180px - 75px);
+
+
+    height: auto;
+    border-radius: 10px 10px 0 0;
+    padding-inline: 60px;
+    padding-block: 40px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 8px;
+}
+
+
+
+
+
+.label-title{
+    display: block;
+    font-size: 64px;
+    font-weight: 700;
+    color: #93C01E;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: rgba(0, 0, 0, 0.2) 0px 0px 2px;
+}
+
+.button-01 {
+    display: inline-block;
+    padding: 8px 24px;
+    margin-block: 24px;
+    margin-inline: auto;
+    background-color: #93C01E;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 4px;
+}.button-01:hover {
+    background-color: #21ADAC;
+}
+
+
+
+.card_status {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    z-index: 1000;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    background: white;
+    color: black;
+    outline: rgb(194, 194, 194) groove 2px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.4);
+    user-select: none;
+    pointer-events: none;
+}
+
+.status_icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+}
+
+.lbl_status {
+    font-size: 18px;
+    margin: 0;
+    line-height: 1.2;
+}
+
+@keyframes status-in {
+    from { transform: translateX(-20px);}
+    to { transform: translateX(0); }
+}
+
+@keyframes status-out {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-30px); }
+}
+
+.card_status.status-visible {
+    animation: status-in 0.5s cubic-bezier(.4,2,.6,1) forwards;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.card_status.status-hide {
+    animation: status-out 0.5s cubic-bezier(.4,2,.6,1) forwards;
+}
+
+
+
+
+
+@media (max-width: 600px) {
+    .navb{
+        flex-direction: column;
+        height: auto;
+        gap: 10px;
+    }
+   .logo{
+        width: calc(220px);
+    }
+    .usuario-nombre {
+        display: none;
+    }
+    .usuario-cerrarsesion {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 12px;
+        font-size: 12px;
+    }
+    .label-title {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+
+    main{
+        margin-inline: 0px;
+    }
+    .maincard {
+        padding-inline: 20px;
+        margin-top: 118px;
+        padding-block: 32px;
+        min-height: calc(100vh - 180px - 20px);
+    }
+ 
+}
+
+@media (max-height: 600px) {
+    .navb {
+        position: static;
+        top: 0px;
+        background-color: #ffffff;
+        justify-content: space-between;
+        display: flex;
+        align-items: center;
+        padding-block: 10px;
+        padding-inline: 24px;
+        margin: 0px;
+        width: calc(100% - 48px);
+        height: 110px;
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px;
+    }
+        .maincard {
+            margin-top: 50px;
+        }
+}
+
+@media print {
+    .usuario-info {
+        display: none !important;
+    }
+    main{
+        margin-inline: 0px;
+    }
+    .maincard {
+        margin-top: 90px !important;
+        padding-inline: 20px;
+        min-height: 0px !important;
+        box-shadow: none !important;
+    }
+    .label-title {
+        font-size: 32px;
+        margin-bottom: 12px;
+    }
+    .card_status {
+        display: none !important;
+    }
+    .button-01 {
+        display: none !important;
+    }
+}
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+{% load static %}
+<!-- Carga los archivos CSS y el JS -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha #{{ ficha.id }} - Hospital Rancagua</title>
+
+    <!-- Enlace al archivo CSS main -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Enlace al archivo CSS de Ficha -->
+    <link rel="stylesheet" href="{% static 'css/ficha.css' %}">
+</head>
+<body>
+    <!-- Incluye el componente de la barra de navegación -->
+    {% include 'components/navbar.html' %}
+    <!-- Incluye un componente para mostrar mensajes de respuesta y notificación -->
+    {% include 'components/response.html' %}
+    <main>
+        <!-- Contenedor principal -->
+        <div class="maincard">
+            <label class="label-title">Cambios</label>
+            <!-- Tarjeta que contiene los detalles del registro de cambio -->
+            <div class="cardficha">
+                ID de la ficha: {{ entry.id }}<br/>
+                Usuario que realizó la acción: <a href="/perfil/?id={{ entry.usuario.id }}">{{ entry.usuario.rut }}</a><br>
+                Accion: {{ entry.accion|safe }}<br/>
+                Fecha de la acción: {{ entry.fechacreacion }}<br/><br/>
+                <br/>
+                <!-- Condicion: Comprueba si existen cambios especificos registrados -->
+                {% if entry.cambios %}
+                    {% for campo, cambio in entry.cambios.items %}
+                        Campo modificado: {{ campo }}<br/>
+                        └ Antiguo valor: {{ cambio.old }}<br/>
+                        └ Nuevo valor: {{ cambio.new }}<br/><br/>
+                    {% endfor %}
+                {% else %}
+                    <!-- Mensaje si no se registraron cambios específicos -->
+                    Sin cambios registrados.
+                {% endif %}
+            </div>
+        </div>
+    </main> 
+</body>
+</html>

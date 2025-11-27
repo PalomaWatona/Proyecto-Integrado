@@ -1,0 +1,48 @@
+{% load static %}
+<!-- Carga los archivos SVG y CSS-->
+
+
+<!-- Bloque condicional: Solo se renderiza este componente si existe la variable 'r' -->
+<!-- Generalmente 'r' contiene el mensaje de respuesta o notificación -->
+{% if r %}
+
+    <!-- Contenedor principal -->
+    <div id="status" class="card_status">
+        <!-- Condicion: Si el tipo de respuesta es 'success' -->
+        {% if r.type == 'success' %}
+            <!-- Muestra el icono de exito -->
+            <img src="{% static 'svg/statussuccess.svg' %}" class="status_icon" alt="Success">
+        
+        <!-- Condicional: Si el tipo de respuesta es 'error' -->
+        {% elif r.type == 'error' %}
+            <!-- Muestra el icono de error -->
+            <img src="{% static 'svg/statuserror.svg' %}" class="status_icon" alt="Error">
+        {% endif %}
+
+        <!-- Parrafo que muestra el texto del mensaje recibido en la variable 'r.message -->
+        <p id="statustext" class="lbl_status"> {{ r.message }} </p>
+
+    </div>
+    <!-- Script que controla la visibilidad y desaparición del mensaje -->
+    <script>
+        // Almacena el temporizador
+        let statusTimeout;
+        // Obtiene el elemento por su ID
+        var statusDiv = document.getElementById("status");
+        // Elimina las clases de visibilidad
+        statusDiv.classList.remove("status-hide", "status-visible");
+        void statusDiv.offsetWidth;
+        // Se añade la clase 'status-visible'
+        statusDiv.classList.add("status-visible");
+
+        // Limpia cualquier temporizador previo si existe (para evitar múltiples desapariciones)
+        if (statusTimeout) clearTimeout(statusTimeout);
+
+        // Establece un nuevo temporizador para ocultar el mensaje después de 6 segundos (6000 ms)
+        statusTimeout = setTimeout(() => {
+            // Inicia la transición para ocultar el mensaje
+            statusDiv.classList.remove("status-visible");
+            statusDiv.classList.add("status-hide");
+        }, 6000);
+    </script>
+{% endif %}

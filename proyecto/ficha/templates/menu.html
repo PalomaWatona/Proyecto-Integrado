@@ -1,0 +1,75 @@
+{% load static %}
+<!-- Carga los archivos CSS y el JS -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Hospital Rancagua</title>
+
+    <!--Enlace al archivo CSS main -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!--Enlace al archivo CSS del menu -->
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+</head>
+<body>
+    <!-- Incluye el componente de la barra de navegación -->
+    {% include 'components/navbar.html' %}
+    <!-- Incluye un componente para mostrar mensajes de respuesta y notificación -->
+    {% include 'components/response.html' %}
+
+    <main>
+        <!-- Contenedor principal -->
+        <div class="maincard">
+            <label class="label-title">Menu</label>
+            <div class="menu-buttons">
+                <!-- Condicion: Muestra el botón si el rol es 'admin' o 'paramedico' -->
+                {% if usuario.rol|lower == 'admin' or usuario.rol|lower == 'paramedico' %}
+                <!-- Boton para crear/acceder a formularios de fichas -->
+                <a href="/formulario/" class="menu-button">
+                    <img src="{% static 'svg/form.svg' %}" class="menu-icon" alt="Formulario Icono">
+                    <span class="menu-text">Formularios de Fichas</span>
+                </a>
+                {% endif %}
+                
+                <!-- Condicion: Muestra el botón si el rol es 'paramedico' -->
+                {% if usuario.rol|lower == 'paramedico' %}
+                <a href="/listado/" class="menu-button">
+                    <img src="{% static 'svg/list.svg' %}" class="menu-icon" alt="Listado Icono">
+                    <span class="menu-text">Mis Fichas</span>
+                </a>
+                {% endif %}
+
+                <!-- Condicion: Muestra el botón si el rol es 'admin' o 'coordinador' -->
+                {% if usuario.rol|lower == 'admin' or usuario.rol|lower == 'coordinador' %}
+                <a href="/listado/" class="menu-button">
+                    <img src="{% static 'svg/list.svg' %}" class="menu-icon" alt="Listado Icono">
+                    <span class="menu-text">Listado de Fichas</span>
+                </a>
+                {% endif %}
+
+                <!-- Condicion: Muestra el botón solo si el rol es 'admin' -->
+                {% if usuario.rol|lower == 'admin' %}
+                <a href="/log/" class="menu-button">
+                    <img src="{% static 'svg/log.svg' %}" class="menu-icon" alt="Log Icono">
+                    <span class="menu-text">Historial de acciones</span>
+                </a>
+                {% endif %}
+
+                <!-- Condicion: Muestra el botón solo si el rol es 'admin' -->
+                {% if usuario.rol|lower == 'admin' %}
+                <a href="/adduser/" class="menu-button">
+                    <img src="{% static 'svg/useradd.svg' %}" class="menu-icon" alt="Añadir Usuario Icono">
+                    <span class="menu-text">Añadir Usuario</span>
+                </a>
+                {% endif %}
+            </div>
+
+
+        </div>
+    </main>
+
+    
+</body>
+</html>

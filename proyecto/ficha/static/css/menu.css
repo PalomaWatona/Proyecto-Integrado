@@ -1,0 +1,46 @@
+.menu-buttons {
+     display: flex;
+     flex-direction: row;
+     justify-content: center;
+     align-items: center;
+     gap: 24px;
+     flex-wrap: wrap;
+     margin-top: 40px;
+     margin-inline: 0px auto;            
+     width: 100%;
+ }
+
+.menu-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    background-color: #ffffff;
+    color: black;
+    width: 200px;
+    height: 200px;
+    border: none;
+    border-radius: 8px;
+    outline: 1px solid #dadada;
+    text-decoration: none;
+    transition: box-shadow 0.3s ease;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 12px;
+}
+
+.menu-button:hover {
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 12px;
+}
+
+.menu-text {
+    margin-top: 12px;
+    font-weight: 200;
+    font-size: 18px;
+}
+
+.menu-icon {
+    width: 120px;
+    height: 120px;
+    margin-inline: auto;
+}

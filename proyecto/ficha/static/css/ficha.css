@@ -1,0 +1,11 @@
+.cardficha {
+    background-color: #ffffff;
+    border: 1px solid #cecece;
+    padding-block: 16px;
+    padding-inline: 32px;
+    margin-inline: 80px;
+    margin-block: 16px;
+    border-radius: 4px;
+    overflow-wrap: break-word;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+}

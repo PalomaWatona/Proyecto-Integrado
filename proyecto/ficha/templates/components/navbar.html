@@ -1,0 +1,19 @@
+{% load static %}
+<!-- Carga los archivos imagenes y CSS-->
+
+<!-- Define el elemento de navegación con la clase 'navb' -->
+<nav class="navb">
+    <!-- Enlace que contiene el logo del hospital. Al hacer clic, redirige al menú principal. -->
+    <a class="logohospital" href="/menu/">
+        <!-- Carga la imagen del logo desde archivos estaticos -->
+        <img src="{% static 'img/logo.png' %}" class="logo" alt="Hospital dr. franco ravera zunino">
+    </a>
+    
+    <!-- Contenedor para mostrar la información del usuario logeado y el enlace de cierre de sesión -->
+    <div class="usuario-info">
+        <!-- Enlace que muestra el nombre y apellido del usuario. Al hacer clic, redirige a la vista de perfil. -->
+        <a href='/perfil/' class="usuario-nombre"> {{ usuario.nombre }} {{ usuario.apellido }} </a>
+        <!-- Enlace para cerrar la sesión (logout). -->
+        <a href="/logout/" class="usuario-cerrarsesion">Cerrar sesión</a>
+    </div>
+</nav>

@@ -1,0 +1,96 @@
+{% load static %}
+<!-- Carga los archivos CSS y JS -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de fichas - Hospital Rancagua</title>
+
+    <!-- Enlace al archivo CSS main -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Enlace al archivo CSS del listado -->
+    <link rel="stylesheet" href="{% static 'css/listado.css' %}">
+</head>
+<body>
+    <!-- Incluye el componente de la barra de navegación -->
+    {% include 'components/navbar.html' %}
+    <!-- Incluye un componente para mostrar mensajes de respuesta y notificación -->
+    {% include 'components/response.html' %}
+
+    <main>
+        <!-- Contenedor principal -->
+        <div class="maincard">
+            <label class="label-title">Historial de acciones</label>
+            
+            <!-- Contenedor de los filtros y la paginación -->
+            <div class="filters">
+                <div class="filters-left">
+                    <!-- Selector para elegir el campo por el que filtrar -->
+                    <select class="filters-select" id="cbofilter">
+                        <option value="" selected disabled>Filtrar por...</option>
+                        <!-- Opciones de filtro -->
+                        <option value="usuario__rut" {% if request.GET.fs == 'usuario__rut' %} selected {% endif %}>Usuario (RUT)</option>
+                        <option value="usuario__id" {% if request.GET.fs == 'usuario__id' %} selected {% endif %}>Usuario (ID)</option>
+                        <option value="accion" {% if request.GET.fs == 'accion' %} selected {% endif %}>Acción</option>
+                        <option value="fechacreacion" {% if request.GET.fs == 'fechacreacion' %} selected {% endif %}>Fecha</option>
+                    </select>
+                    <!-- Campo para ingresar el término de búsqueda -->
+                    <input class="filters-search" type="text" id="txtsearch" placeholder="Término de búsqueda" value="{% if request.GET.s %}{{ request.GET.s }}{% endif %}">
+                </div>
+                <div id="pagination" class="pagination"></div>
+                <!-- Contenedor de los filtros de ordenamiento y botones de accion -->
+                <div class="filters-right">
+                    <select class="filters-select" id="cboorderfilter">
+                        <option value="" selected disabled>Ordenar por...</option>
+                        <option value="fechacreacion" {% if request.GET.fo == 'fechacreacion' %} selected {% endif %}>Fecha</option>
+                        <option value="usuario__id" {% if request.GET.fo == 'usuario__id' %} selected {% endif %}>Usuario (ID)</option>
+                        <option value="usuario__rut" {% if request.GET.fo == 'usuario__rut' %} selected {% endif %}>Usuario (RUT)</option>
+                        <option value="accion" {% if request.GET.fo == 'accion' %} selected {% endif %}>Acción</option>
+                    </select>
+                    <select class="filters-select" id="cboorder">
+                        <option value="desc" {% if request.GET.o == 'desc' %} selected {% endif %}>⮝</option>
+                        <option value="asc" {% if request.GET.o == 'asc' %} selected {% endif %}>⮟</option>
+                    </select>
+                    <button type="button" class="filters-button" style="border-radius: 12px 0px 0px 12px;" onclick="aplicarFiltros()">Aplicar filtros</button>
+                    <button type="button" class="filters-button" style="border-radius: 0px 12px 12px 0px;" onclick="borrarFiltros()">𐌗</button>
+                </div>
+            </div>
+
+            <!-- Condicion: Si hay registros en el log para mostrar muestra el total de registros encontrados -->
+            {% if log %}
+                <p class="lbl-results">Total registros: {{ totalresults }}</p>
+                <table class="table">
+                    <tr >
+                        <th style="width: 12px;">ID</th>
+                        <th style="width: 120px;">Usuario</th>
+                        <th>Accion</th>
+                        <th style="width: 190px;">Fecha</th>
+                    </tr>
+                {% for x in log %}    
+                    <tr class="align-middle">
+                        <td>{{ x.id }}</td>
+                        <td><a class="rutuser" href="/perfil/?id={{ x.usuario.id }}" title="[{{ x.usuario.rut }}] {{ x.usuario.nombre }} {{ x.usuario.apellido }}">[{{ x.usuario.id }}] {{ x.usuario.rut }}</a></td>
+                        <td>{{ x.accion|safe }}</td>
+                        <td>{{ x.fechacreacion }}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+                
+            {% else %}
+                <label class="txtnotfound">No hay registros para mostrar</label>
+            {% endif %}
+        </div>
+    </main>
+
+<!-- Enlace al archivo JS para los botones de filtro/orden -->
+<script src="{% static 'js/listado-botones.js' %}"></script>
+
+<!-- Enlace al archivo JS de la paginación -->
+<script src="{% static 'js/listado-pagination.js' %}"></script>
+
+<!-- Inicia la paginación con el total de páginas, la página actual y un límite de botones visibles -->
+<script>createPagination({{ totalpages }}, {{ page }}, 1 );</script>
+</body>
+</html>

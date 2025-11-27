@@ -1,0 +1,288 @@
+.txtnotfound{
+    display: block;
+    text-align: center;
+    color: rgb(146, 146, 146);
+    margin-top: 40px;
+}
+
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+.table th, .table td {
+    padding: 12px 12px;
+    border: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f4f4f4;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 400;
+}
+
+.table td {
+    text-align: left;
+    font-weight: 300;
+}
+.table td a{
+    color: black;
+}
+.tdbuttons{
+    display: flex;
+    justify-content: center;
+}
+
+.tdbutton {
+    display: inline-block;
+    padding: auto;
+    margin-inline: 3px;
+    padding:auto;
+    height: 38px;
+    width:  38px;
+    background-color: #93C01E;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 4px;
+}.tdbutton:hover {
+    background-color: #21ADAC;
+}.tdbutton-icon{
+    width: 24px;
+    height: 24px;
+    margin-inline: auto;
+}
+    
+
+.table tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+.button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+
+.rutuser {
+    color: #007bff;
+    text-decoration: none;
+    font-family: monospace;
+    font-weight: 20;
+    color: black;
+}
+
+.lbl-results {
+    font-size: 12px;
+    font-weight: 300;
+    margin-top: 8px;
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 80px;
+}
+
+.filters-left {
+    display: flex;
+    padding: 10px;
+}
+
+.filters-right {
+    display: flex;
+    padding: 10px;
+}
+
+
+.filters-select {
+    background-color: white;
+    margin-right: 8px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-width: 120px;
+    font-size: 12px;
+}
+.filters-select:focus {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px #53968f7a;
+}
+
+.filters-search {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 12px;
+    width: 150px;
+}
+.filters-search:focus {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px #53968f7a;
+}
+
+.filters-button {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #93C01E;
+    color: white;
+    text-decoration: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 200;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 4px;
+}.filters-button:hover {
+    background-color: #21ADAC;
+}
+.filters-checkboxgroup {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* 1. Oculta el input nativo */
+.filters-checkboxgroup input{
+    display:none;
+}.filters-checkboxgroup label{
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    font-size: 12px;
+    width: 80px;
+    padding-left: 30px;
+    user-select: none;
+}.filters-checkboxgroup label::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff; /* Borde gris suave por defecto */
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 50%; /* ¡Esto lo hace un círculo! */
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
+}.filters-checkboxgroup input:checked + label::before {
+    background-color: #4CAF50; /* ¡Fondo verde! */
+}
+
+/* 5. Muestra la marca cuando está marcado */
+.filters-checkboxgroup input:checked + label::after {
+    display: block;
+}
+
+
+
+
+.pagination {
+    display: flex;
+    width: 320px;
+    justify-content: center;
+    margin-block: auto;
+}
+.pagination button {
+    height: 35px;
+    width: 35px;
+    padding: 2px 2px;
+    margin: 0 2px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 18px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    color: #333;
+    border-radius: 4px;
+}
+.pagination button:hover {
+    background-color: #21ADAC;
+    color: white;
+}
+.pagination input {
+    height: 25px;
+    min-height: 30px;
+    width: 30px;
+    max-width: 30px;
+    padding: 2px 2px;
+    margin: 0 2px;
+    text-align: center;
+    font-size: 18px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.pagination input:hover {
+    outline: none;
+    background-color: #e3eeed;
+    border-color: #53968f7a;
+}
+.pagination input:focus {
+    outline: none;
+    border-color: rgb(83, 150, 143);
+    box-shadow: 0 0 0 2px #53968f7a;
+}
+
+
+
+.table-phonetext {
+    display: none;
+    padding-right: 5px;
+}
+
+@media (max-width: 1150px) {
+    .filters{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .filters-left, .filters-right, .pagination {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    .pagination {
+        order: 2;
+    }
+
+    .table th, .table td {
+        padding: 8px 8px;
+        display: flex;
+        width: 100%;
+    }
+    .tdbuttons{
+        height: 90px;
+    }
+    .tdbutton {
+        height: 64px;
+        width:  64px;
+    }
+    .tdbutton-icon{
+        width: 48px;
+        height: 48px;
+    }
+    .table th {
+        display: none;
+    }
+    .table-phonetext {
+        display: inline;
+    }
+}

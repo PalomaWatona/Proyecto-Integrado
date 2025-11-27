@@ -1,0 +1,132 @@
+{% load static %}
+<!-- Carga los archivos CSS y el JS -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal - Hospital Rancagua</title>
+
+    <!-- Enlace al archivo CSS main -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Enlace al archivo CSS del formulario -->
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+</head>
+<body>
+    <!-- Incluye el componente de la barra de navegación -->
+    {% include 'components/navbar.html' %}
+    <!-- Incluye un componente para mostrar mensajes de respuesta y notificación -->
+    {% include 'components/response.html' %}
+
+    <main>
+        <!-- Contenedor principal -->
+        <div class="maincard">
+            <label class="label-title">Editar perfil</label>
+            <div class="form-container">
+                <!-- Envía los datos de edición, usando el ID del perfil -->
+                <form method="post" action="/editarperfil_send/{{ usuario_perfil.id }}/">
+                    {% csrf_token %}
+
+                    <!-- Los datos son precargados -->
+                    <!-- Campos de Ingreso de Datos-->
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Nombre</label>
+                            <input class="input-text" type="text" name="txtnom" placeholder="Ingresa el Nombre" value="{{ usuario_perfil.nombre }}" maxlength="80">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Apellido</label>
+                            <input class="input-text" type="text" name="txtape" placeholder="Ingresa el Apellido" value="{{ usuario_perfil.apellido }}" maxlength="80">
+                        </div>
+                        <!-- Condicion: Si NO esta editando su propio perfil y el usuario logeado es 'admin' entonces-->
+                        {% if not perfilself and usuario.rol|lower == 'admin' %}
+                            <div class="input-group">
+                                <label class="input-label">Reiniciar Contraseña</label>
+                                <!-- El campo que pide la contraseña antigua del 'admin' para autorizar el reinicio -->
+                                <input class="input-text" type="password" name="txtpassold" placeholder="Ingresa su contraseña antigua" maxlength="80">
+                            </div>
+                            <!-- Campos 'txtpass1' y 'txtpass2' ocultos si el admin está editando a otro usuario -->
+                            <input type="hidden" name="txtpass1" value="">
+                            <input type="hidden" name="txtpass2" value="">
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Condicion: Muestra los campos de cambio de contraseña solo si está editando su propio perfil -->
+                    {% if perfilself %}
+                    <label class="input-label">Contraseña</label>
+                    <div class="input-doublegroup">
+
+                        <!-- Campo para la contraseña antigua -->
+                        <div class="input-group">
+                            <input class="input-text" type="password" name="txtpassold" placeholder="Ingresa su contraseña antigua" maxlength="80">
+                        </div>
+
+                        <!-- Campo para la nueva contraseña -->
+                        <div class="input-group">
+                            <input class="input-text" type="password" name="txtpass1" placeholder="Ingresa su nueva contraseña" maxlength="80">
+                        </div>
+
+                        <!-- Campo para confirmar la nueva contraseña -->
+                        <div class="input-group">
+                            <input class="input-text" type="password" name="txtpass2" placeholder="Confirma su nueva contraseña" maxlength="80">
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Correo</label>
+                            <input class="input-text" type="email" name="txtcor" placeholder="Ingresa el Correo" value="{{ usuario_perfil.correo }}" maxlength="80">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Teléfono</label>
+                            <input class="input-phone" type="number" name="txttel" placeholder="Ingrese un teléfono" value="{{ usuario_perfil.telefono }}" min="0" max="999999999" >
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Bio</label>
+                        <div class="input-txtarea">
+                            <textarea name="txtbio" placeholder="Observaciones adicionales" maxlength="200">{{ usuario_perfil.bio }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Condicion: Muestra los campos de Rol y Estado solo si el usuario logeado es 'admin' -->
+                    {% if usuario.rol|lower == 'admin' %}
+                    <div class="input-doublegroup">
+                        <div class="input-group">
+                            <label class="input-label">Rol</label>
+                            <!-- El Selector de rol, Se deshabilita si el rol actual es 'admin' (para evitar des-adminstrarse accidentalmente) -->
+                            <select class="input-select" name="cborol" {% if usuario_perfil.rol|lower == 'admin' %} disabled {% endif %}>
+                                <option value="">-Elija un rol-</option>
+                                <!-- Opción 'Administrador' (solo seleccionable si ya es admin) -->
+                                {% if usuario_perfil.rol == "admin" %} <option value="admin" selected >Administrador</option> {% endif %}
+                                <option value="coordinador" {% if usuario_perfil.rol == "coordinador" %} selected {% endif %}>Coordinador de urgencias</option>
+                                <option value="paramedico" {% if usuario_perfil.rol == "paramedico" %} selected {% endif %}>Paramedico</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Estado</label>
+                            <!-- Selector de estado (Activo/Inactivo). Se deshabilita si el rol es 'admin' -->
+                            <select class="input-select" name="cboest" {% if usuario_perfil.rol|lower == 'admin' %} disabled {% endif %} >
+                                <option value="True" {% if usuario_perfil.estado %} selected {% endif %}>Activo</option>
+                                <option value="False" {% if not usuario_perfil.estado %} selected {% endif %}>Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                <button type="submit" class="button-01">
+                        <span>Actualizar</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    
+</body>
+</html>

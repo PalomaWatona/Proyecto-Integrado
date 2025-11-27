@@ -1,0 +1,157 @@
+{% load static %}
+<!-- Carga los archivos CSS y JS -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de fichas - Hospital Rancagua</title>
+
+    <!-- Enlace al archivo CSS main -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- Enlace al archivo CSS del listado -->
+    <link rel="stylesheet" href="{% static 'css/listado.css' %}">
+</head>
+<body>
+    <!-- Incluye el componente de la barra de navegación -->
+    {% include 'components/navbar.html' %}
+    <!-- Incluye un componente para mostrar mensajes de respuesta y notificación -->
+    {% include 'components/response.html' %}
+
+    <main>
+        <!-- Contenedor principal -->
+        <div class="maincard">
+            <label class="label-title">Listado de fichas</label>
+            <!-- Contenedor de los filtros y la paginación -->
+            <div class="filters">
+                <div class="filters-left">
+                    <select class="filters-select" id="cbofilter">
+                        <option value="" selected disabled>Filtrar por...</option>
+                        <!-- Opciones de filtro para los campos de la ficha.-->
+                        <option value="nombrepaciente" {% if request.GET.fs == 'nombrepaciente' %} selected {% endif %}>Nombre Paciente</option>
+                        <option value="apellidopaciente" {% if request.GET.fs == 'apellidopaciente' %} selected {% endif %}>Apellido Paciente</option>
+                        <option value="rutpaciente" {% if request.GET.fs == 'rutpaciente' %} selected {% endif %}>RUT Paciente</option>
+                        <!-- Condicion: Muestra filtro por RUT Médico solo si NO es la vista "self" (Mis Fichas) -->
+                        {% if not self %}<option value="rutparamedico" {% if request.GET.fs == 'rutparamedico' %} selected {% endif %}>RUT Médico</option>{% endif %}
+                        <option value="motivoconsulta" {% if request.GET.fs == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
+                        <option value=":telefono" {% if request.GET.fs == ':telefono' %} selected {% endif %}>Teléfono</option>
+                        <option value=":prevision" {% if request.GET.fs == ':prevision' %} selected {% endif %}>Previsión</option>
+                        <option value=":genero" {% if request.GET.fs == ':genero' %} selected {% endif %}>Género</option>
+                        <option value=":edad" {% if request.GET.fs == ':edad' %} selected {% endif %}>Edad</option>
+                        <option value="comorbilidades" {% if request.GET.fs == 'comorbilidades' %} selected {% endif %}>Comorbilidades</option>
+                        <option value="alergias" {% if request.GET.fs == 'alergias' %} selected {% endif %}>Alergias</option>
+                        <option value=":frecuenciacardiaca" {% if request.GET.fs == ':frecuenciacardiaca' %} selected {% endif %}>Frecuencia cardiaca</option>
+                        <option value=":temperatura" {% if request.GET.fs == ':temperatura' %} selected {% endif %}>Temperatura</option>
+                        <option value=":presionarterial" {% if request.GET.fs == ':presionarterial' %} selected {% endif %}>Presión arterial</option>
+                        <option value=":tiposangre" {% if request.GET.fs == ':tiposangre' %} selected {% endif %}>Tipo de sangre</option>
+                        <option value="observaciones" {% if request.GET.fs == 'observaciones' %} selected {% endif %}>Observaciones</option>
+                        <option value="fechacreacion" {% if request.GET.fs == 'fechacreacion' %} selected {% endif %}>Fecha de creación</option>          
+                    </select>
+                    <!-- Campo de texto para ingresar el término de búsqueda. -->
+                    <input class="filters-search" type="text" id="txtsearch" placeholder="Término de búsqueda" value="{% if request.GET.s %}{{ request.GET.s }}{% endif %}">
+                    <div class="filters-checkboxgroup">
+                        <input type="checkbox" id="hidereviewed" {% if request.GET.rv != 'n' %} checked {% endif %}>
+                        <label for="hidereviewed">Ocultar fichas revisadas</label>
+                    </div>
+                </div>
+                <!-- Contenedor de la paginación -->
+                <div id="pagination" class="pagination"></div>
+                <div class="filters-right">
+                    <select class="filters-select" id="cboorderfilter">
+                        <option value="" selected disabled>Ordenar por...</option>
+                        <option value="fechacreacion" {% if request.GET.fo == 'fechacreacion' %} selected {% endif %}>Fecha de creación</option>
+                        <option value="nombrepaciente" {% if request.GET.fo == 'nombrepaciente' %} selected {% endif %}>Nombre Paciente</option>
+                        <option value="apellidopaciente" {% if request.GET.fo == 'apellidopaciente' %} selected {% endif %}>Apellido Paciente</option>
+                        <option value="rutpaciente" {% if request.GET.fo == 'rutpaciente' %} selected {% endif %}>RUT Paciente</option>
+                        <option value="motivoconsulta" {% if request.GET.fo == 'motivoconsulta' %} selected {% endif %}>Motivo de consulta</option>
+                        <!-- Condicion: Muestra filtro por RUT Médico solo si NO es la vista "self" -->
+                        {% if not self %}<option value="rutparamedico" {% if request.GET.fo == 'rutparamedico' %} selected {% endif %}>RUT Médico</option>{% endif %}
+                        <option value="telefono" {% if request.GET.fo == 'telefono' %} selected {% endif %}>Teléfono</option>
+                        <option value="prevision" {% if request.GET.fo == 'prevision' %} selected {% endif %}>Previsión</option>
+                        <option value="genero" {% if request.GET.fo == 'genero' %} selected {% endif %}>Género</option>
+                        <option value="edad" {% if request.GET.fo == 'edad' %} selected {% endif %}>Edad</option>
+                        <option value="comorbilidades" {% if request.GET.fo == 'comorbilidades' %} selected {% endif %}>Comorbilidades</option>
+                        <option value="alergias" {% if request.GET.fo == 'alergias' %} selected {% endif %}>Alergias</option>
+                        <option value="frecuenciacardiaca" {% if request.GET.fo == 'frecuenciacardiaca' %} selected {% endif %}>Frecuencia cardiaca</option>
+                        <option value="temperatura" {% if request.GET.fo == 'temperatura' %} selected {% endif %}>Temperatura</option>
+                        <option value="presionararterial" {% if request.GET.fo == 'presionarterial' %} selected {% endif %}>Presión arterial</option>
+                        <option value="tiposangre" {% if request.GET.fo == 'tiposangre' %} selected {% endif %}>Tipo de sangre</option>
+                        <option value="observaciones" {% if request.GET.fo == 'observaciones' %} selected {% endif %}>Observaciones</option>
+                    </select>
+                    <select class="filters-select" id="cboorder">
+                        <option value="desc" {% if request.GET.o == 'desc' %} selected {% endif %}>⮝</option>
+                        <option value="asc" {% if request.GET.o == 'asc' %} selected {% endif %}>⮟</option>
+                    </select>
+                    <!-- Boton para aplicar los filtros -->
+                    <button type="button" class="filters-button" style="border-radius: 12px 0px 0px 12px;" onclick="aplicarFiltros()">Aplicar filtros</button>
+                    <!-- Botón para limpiar los filtros -->
+                    <button type="button" class="filters-button" style="border-radius: 0px 12px 12px 0px;" onclick="borrarFiltros()">𐌗</button>
+                </div>
+            </div>
+
+            <!-- Condicion: Si hay fichas para mostrar muestra el total de registros encontrados-->
+            {% if fichas %}
+                <p class="lbl-results">Total registros: {{ totalresults }}</p>
+                <table class="table">
+                    <tr >
+                        <th style="width: 15px;">ID</th>
+                        <th style="width: 200px;">Nombre Completo</th>
+                        <th style="width: 80px;">Genero</th>
+                        <th style="width: 20px;">Edad</th>
+                        <th>Motivo de consulta</th>
+                        <th style="width: 190px;">Fecha</th>
+                        <th style="width: 50px;"></th>
+                    </tr>
+                    
+                <!-- Bucle: Repite por cada ficha -->    
+                {% for x in fichas %}
+                    <!-- El color de fondo cambia si la ficha ha sido revisada -->
+                    <tr class="align-middle" style="background-color: {% if x.revisado %} #ebebebff {% endif %};">
+                        <td><div class="table-phonetext">Id:</div>{{ x.id }}</td>
+                        <td><div class="table-phonetext">Nombre Completo:</div>{% if  not x.nombrepaciente and not x.apellidopaciente %} n/a {% else %} {% if x.nombrepaciente %} {{ x.nombrepaciente }} {% else %} -- {% endif %} {{ x.apellidopaciente }} {% endif %}</td>
+                        <td><div class="table-phonetext">Genero:</div>{{ x.genero }}</td>
+                        <td><div class="table-phonetext">Edad:</div>{{ x.edad }}</td>
+                        <td><div class="table-phonetext">Motivo de consulta:</div>{{ x.motivoconsulta }}</td>
+                        <td><div class="table-phonetext">Fecha:</div>{{ x.fechacreacion }}</td>
+                        <!-- Botones de acción (eliminar, ver, editar) -->
+                        <td class="tdbuttons">
+                            <!-- Condicion: Muestra el boton Eliminar solo si el usuario es 'admin' -->
+                            {% if usuario.rol|lower == 'admin' %}
+                                <button type="button" class= "tdbutton" title="Eliminar ficha" onClick="botonEliminar({{ x.id }})">
+                                    <img src="{% static 'svg/delete.svg' %}" class="tdbutton-icon" alt="Eliminar">
+                                </button>
+                            {% endif %}
+                            <!-- Boton para ver la ficha -->
+                            <button type="button" class= "tdbutton" title="Ver ficha" onClick="botonVerFicha({{ x.id }})">
+                                <img src="{% static 'svg/read.svg' %}" class="tdbutton-icon" alt="Ver Ficha">
+                            </button>
+
+                            <!-- Boton para editar la ficha -->
+                            <button type="button" class= "tdbutton" title="Editar ficha" onClick="botonEditarFicha({{ x.id }})">
+                                <img src="{% static 'svg/edit.svg' %}" class="tdbutton-icon" alt="Editar Ficha">
+                            </button>
+                            
+                        </td>
+                    </tr>
+                {% endfor %}
+                </table>
+                <div class="filters">
+                    <div id="pagination2" class="pagination"></div>
+                </div>
+            {% else %}
+                <label class="txtnotfound">No hay registros de fichas para mostrar</label>
+            {% endif %}
+        </div>
+    </main>
+
+<!-- Enlace al archivo JS para los botones de filtro/orden -->
+<script src="{% static 'js/listado-botones.js' %}"></script>
+
+<!-- Enlace al archivo JS de la paginación -->
+<script src="{% static 'js/listado-pagination.js' %}"></script>
+
+<!-- Inicia la paginación con el total de páginas, la página actual y un límite de botones visibles -->
+<script>createPagination("pagination", {{ totalpages }}, {{ page }}, 1 );</script>
+</body>
+</html>
