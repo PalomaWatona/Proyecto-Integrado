@@ -9,8 +9,8 @@ with open(os.path.join(settings.BASE_DIR, 'ficha', 'static', 'json', 'responses.
     responselist = json.load(f)
 
 
+# Función para obtener y limpiar mensajes de estado de la sesión.
 def getstatus(request):
-    # Función para obtener y limpiar mensajes de estado de la sesión.
     if request.session.get('r'):
         # Obtiene el índice 'r' (response ID) de la sesión.
         r = responselist[ int(request.session.get('r')) ] if request.session.get('r') else None
@@ -20,8 +20,8 @@ def getstatus(request):
     return r
 
 
+# Funcion que verificar la sesión.
 def redir(request, r=None):
-    # Funcion que verificar la sesión.
     userid = request.session.get('userid')
     if userid:
         try:
@@ -42,8 +42,8 @@ def redir(request, r=None):
         return redirect('/login/')
 
 
+# Para ver el menu principal. Requiere tener la sesión iniciada.
 def menu(request):
-    # Para ver el menu principal. Requiere tener la sesión iniciada.
     userid = request.session.get('userid')
     if not userid:
         return redir(request) # Redirige al login si no está logueado.
@@ -58,8 +58,8 @@ def menu(request):
     return render(request, 'menu.html', datos) # Renderiza la plantilla del menu.
     
 
+# Vista para el inicio de sesión.
 def iniciarSesion(request):
-    # Vista para el inicio de sesión.
     r = responselist[ int(request.GET.get('r'))] if request.GET.get('r') else None # Obtiene mensaje de la URL (no usado con getstatus).
     if request.method == 'POST':
         rut = request.POST['rut']
@@ -90,8 +90,8 @@ def iniciarSesion(request):
         return render(request, 'login.html' , {'r': r} )
 
 
+# Cierra la sesión del usuario.
 def cerrarSesion(request, disabled=False):
-    # Cierra la sesión del usuario.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -109,8 +109,8 @@ def cerrarSesion(request, disabled=False):
     return redirect('/login/')
 
 
+# Vista para mostrar el perfil de un usuario.
 def perfil(request):
-    # Vista para mostrar el perfil de un usuario.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -124,11 +124,9 @@ def perfil(request):
     if (usuario_perfil.rol or '').lower() == 'admin' and (usuario.rol or '').lower() != 'admin':
         return redir(request, r=6)
     
-    # Obtiene el último inicio de sesión.
-    lastlog = HistorialAcciones.objects.filter(usuario=usuario_perfil, accion='Sesión iniciada').order_by('-fechacreacion').first()
+    lastlog = HistorialAcciones.objects.filter(usuario=usuario_perfil, accion='Sesión iniciada').order_by('-fechacreacion').first() # Obtiene el último inicio de sesión.
     perfilself = (usuario.id == usuario_perfil.id) # Indica si se ve el propio perfil.
-    # Obtiene las últimas 10 acciones registradas para el usuario.
-    lastactions = HistorialAcciones.objects.filter(usuario=usuario_perfil).order_by('-fechacreacion')[:10]
+    lastactions = HistorialAcciones.objects.filter(usuario=usuario_perfil).order_by('-fechacreacion')[:10] # Obtiene las últimas 10 acciones registradas para el usuario.
 
     r = getstatus(request)
     request.session['lasturl'] = request.get_full_path()
@@ -136,8 +134,8 @@ def perfil(request):
     return render(request, 'perfil.html', datos)
 
 
+# Vista para el formulario de edición del perfil.
 def editarperfil(request):
-    # Vista para el formulario de edición del perfil.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -156,8 +154,8 @@ def editarperfil(request):
     return render(request, 'editarperfil.html', datos)
 
 
+# Maneja el POST para la edición de perfil.
 def editarperfil_send(request, id):
-    # Maneja el POST para la edición de perfil.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -228,8 +226,8 @@ def editarperfil_send(request, id):
     return redirect(f'/perfil/?id={usuario_perfil.id}')
 
 
+# Vista para mostrar el formulario de creación de usuario. Solo para admin.
 def adduser(request):
-    # Vista para mostrar el formulario de creación de usuario. Solo para admin.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -244,8 +242,8 @@ def adduser(request):
     return render(request, 'addUser.html', datos)
 
 
+# Maneja el POST para la creación de usuario. Solo para admin.
 def adduser_send(request): 
-    # Maneja el POST para la creación de usuario. Solo para admin.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -277,8 +275,8 @@ def adduser_send(request):
     return redirect(f'/perfil/?id={nuevo_usuario.id}')
 
 
+# Vista del formulario de creación de Ficha. Solo para admin/paramedico.
 def formulario(request):
-    # Vista del formulario de creación de Ficha. Solo para admin/paramedico.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -293,8 +291,8 @@ def formulario(request):
     return render(request, 'formulario.html', datos)
 
 
+# Maneja el POST para la creación de Ficha.
 def formulario_send(request):
-    # Maneja el POST para la creación de Ficha.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -333,8 +331,8 @@ def formulario_send(request):
     return redirect(f'/ficha/?id={ficha.id}')
 
 
+# Vista para el formulario de edición de la Ficha.
 def editarficha(request, self = False):
-    # Vista para el formulario de edición de la Ficha.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -356,8 +354,8 @@ def editarficha(request, self = False):
     return render(request, 'formulario.html', datos)
 
 
+# Maneja el POST para la edición de Ficha.
 def editarficha_send(request, id):
-    # Maneja el POST para la edición de Ficha.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -411,8 +409,8 @@ def editarficha_send(request, id):
     return redirect(f'/ficha/?id={ficha.id}')
 
 
+# Elimina una ficha. Solo para admin.
 def eliminarficha(request, id):
-    # Elimina una ficha. Solo para admin.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -433,8 +431,8 @@ def eliminarficha(request, id):
     return redirect(request.session.get('lasturl')) # Redirige a la última URL visitada.
 
 
+# Vista para ver los detalles de una ficha.
 def verficha(request):
-    # Vista para ver los detalles de una ficha.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -449,8 +447,8 @@ def verficha(request):
     return render(request, 'Ficha.html', datos)
 
 
+# Cambia el estado 'revisado' de una ficha (True/False). Solo para admin y coordinador.
 def cambioestado(request, id):
-    # Cambia el estado 'revisado' de una ficha (True/False). Solo para admin y coordinador.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -471,8 +469,8 @@ def cambioestado(request, id):
     return redirect(request.session.get('lasturl'))
 
 
+# Vista para el listado de fichas con filtros, búsqueda y paginación.
 def listado(request, self = False):
-    # Vista para el listado de fichas con filtros, búsqueda y paginación.
     userid = request.session.get('userid')
     if not userid:
         return redir(request)
@@ -529,8 +527,8 @@ def listado(request, self = False):
     return render(request, 'Listado.html', datos)
 
 
+# Vista para el listado del historial de acciones (log). Solo para admin.
 def log(request):
-    # Vista para el listado del historial de acciones (log). Solo para admin.
     userid = request.session.get('userid')
     if not userid:
         return redirect('/login/?r=1')
@@ -576,8 +574,8 @@ def log(request):
     return render(request, 'log.html', datos)
 
 
+# Vista para ver el detalle de los cambios registrados en una entrada de HistorialAcciones. Solo para admin.
 def logcambios(request):
-    # Vista para ver el detalle de los cambios registrados en una entrada de HistorialAcciones. Solo para admin.
     userid = request.session.get('userid')
     if not userid:
         return redirect('/login/?r=1')

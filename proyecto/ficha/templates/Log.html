@@ -91,6 +91,6 @@
 <script src="{% static 'js/listado-pagination.js' %}"></script>
 
 <!-- Inicia la paginación con el total de páginas, la página actual y un límite de botones visibles -->
-<script>createPagination({{ totalpages }}, {{ page }}, 1 );</script>
+<script>createPagination("pagination", {{ totalpages }}, {{ page }}, 1 );</script>
 </body>
 </html>
