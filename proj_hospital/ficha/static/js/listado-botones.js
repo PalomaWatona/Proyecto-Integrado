@@ -16,7 +16,12 @@ function aplicarFiltros() {
     let link = "";
     const filter = document.getElementById('cbofilter').value;
     const search = document.getElementById('txtsearch').value;
-    const hidereviewed = document.getElementById('hidereviewed').checked;
+    if (!document.getElementById('hidereviewed')) {
+        hidereviewed = false;
+    } else {
+        hidereviewed = document.getElementById('hidereviewed').checked;
+    }
+
     if (filter != "" && search != "") {
         link += `?fs=${filter}&s=${search}`;
     }

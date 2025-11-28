@@ -74,6 +74,6 @@
 <script src="{% static 'js/listado-botones.js' %}"></script>
 <script src="{% static 'js/listado-pagination.js' %}"></script>
 
-<script>createPagination({{ totalpages }}, {{ page }}, 1 );</script>
+<script>createPagination("pagination", {{ totalpages }}, {{ page }}, 1 );</script>
 </body>
 </html>
